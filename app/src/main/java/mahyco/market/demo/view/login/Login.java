@@ -48,13 +48,13 @@ public class Login extends AppCompatActivity implements LoginAPIListener {
                 ValidateLogin(str_usercode, str_password);
             }
         });
-      /*  if( Preferences.get(context,Preferences.USER_ID)!=null||!Preferences.get(context,Preferences.USER_ID).trim().equals(""))
+      if( Preferences.get(context,Preferences.USER_ID)!=null||!Preferences.get(context,Preferences.USER_ID).trim().equals(""))
         {
 
             Intent intent = new Intent(context, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        }*/
+        }
     }
 
     private void ValidateLogin(String str_usercode, String str_password) {

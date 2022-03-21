@@ -2,23 +2,16 @@ package mahyco.market.demo.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -26,36 +19,36 @@ import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
-import mahyco.market.demo.view.pendingaction.PendingActionAPI;
+import mahyco.market.demo.view.sowingaction.AddNewSowingDetails;
 
 
-public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObjectHolder> {
+public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adapter.DataObjectHolder> {
 
 
     Context context;
     SqlightDatabase sqlightDatabase;
     private static final int UNSELECTED = -1;
-    PendingActionAPI pendingActionAPI;
+
     ArrayList<ActionModel> actionModelArrayList = null;
 
     public interface EventListener {
         void onDelete(int trid, int position);
     }
 
-    public ActionAdapter(ArrayList<ActionModel> actionModels, Context context, PendingActionAPI pendingActionAPI) {
+    public Action_Local_Adapter(ArrayList<ActionModel> actionModels, Context context) {
 
         this.actionModelArrayList = actionModels;
         Log.i("Action Count:", ">>" + actionModels.size());
         this.context = context;
         sqlightDatabase=new SqlightDatabase(context);
-        this.pendingActionAPI=pendingActionAPI;
+
     }
 
     @NonNull
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_pending_actions, parent, false);
+                .inflate(R.layout.item_pending_local_actions, parent, false);
 
         return new DataObjectHolder(view);
     }
@@ -111,18 +104,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.btnDownloadPA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("filterValue", actionModel.getTalukaId());
-                    jsonObject.addProperty("FilterOption", "TalukaId");
-                    pendingActionAPI.getVillageList(jsonObject);
+                   try{
+                       Intent intent=new Intent(context, AddNewSowingDetails.class);
+                       Preferences.save(context,Preferences.SELECTED_UNIQSRID,actionModel.getUniqueSrNo());
+                       context.startActivity(intent);
+                   }catch(Exception e)
+                   {
 
-                    if(sqlightDatabase.addPendingAction(actionModel))
-                    {
-                        Toast.makeText(context, "Data Saved Locally", Toast.LENGTH_SHORT).show();
-                    }else
-                    {
-                        Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
-                    }
+                   }
                 }
             });
 

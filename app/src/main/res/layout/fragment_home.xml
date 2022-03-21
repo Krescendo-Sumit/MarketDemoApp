@@ -16,17 +16,33 @@
         android:padding="50dp">
 
         <Button
+            android:id="@+id/btn_uplaod_pending_sowingdetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload"
+            android:drawableRight="@drawable/ic_upload"
+            />
+
+
+
+        <Button
+            android:id="@+id/btn_takeAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/comforta"
+            android:text="Take Action" />
+
+        <Button
             android:id="@+id/btn_getpendingaction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comforta"
-            android:text="Get Pending Actions" />
+            android:text="Download Pending Action" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_clear_local_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/comforta"
-            android:text="Button" />
+            android:text="Clear Data" />
     </LinearLayout>
 </RelativeLayout>

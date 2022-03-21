@@ -3,6 +3,8 @@
     package="mahyco.market.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -12,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MahycoMarketDemo"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.pendingaction.PendingActionActivity"></activity>
+        <activity android:name=".view.sowingaction.AddNewSowingDetails"></activity>
+        <activity android:name=".view.actionlist.PendingActionList" />
+        <activity android:name=".view.pendingaction.PendingActionActivity" />
         <activity
             android:name=".view.login.Login"
             android:screenOrientation="portrait"
@@ -27,7 +31,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MahycoMarketDemo.NoActionBar"></activity>
+            android:theme="@style/Theme.MahycoMarketDemo.NoActionBar" />
     </application>
 
 </manifest>

@@ -6,21 +6,31 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
+import mahyco.market.demo.model.MessageModel;
 import mahyco.market.demo.model.PendingActionModel;
+import mahyco.market.demo.model.SowingMasterModel;
 import mahyco.market.demo.util.Preferences;
+import mahyco.market.demo.util.SqlightDatabase;
+import mahyco.market.demo.view.actionlist.PendingActionList;
 import mahyco.market.demo.view.pendingaction.PendingActionActivity;
 
 /**
@@ -32,6 +42,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     View baseView;
     Context context;
     List<ActionModel> lst_actionModels;
+    SqlightDatabase sqlightDatabase;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,7 +53,8 @@ public class HomeFragment extends Fragment implements HomeListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    Button btn_getPendingActions;
+    Button btn_getPendingActions,btn_takeAction,btn_uplaod_pending_sowingdetails,btn_clear_local_data;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -83,8 +95,15 @@ public class HomeFragment extends Fragment implements HomeListener {
         //   return inflater.inflate(R.layout.fragment_home, container, false);
         baseView = inflater.inflate(R.layout.fragment_home, container, false);
         context = getContext();
+        sqlightDatabase=new SqlightDatabase(context);
         homeAPI = new HomeAPI(context, this);
         btn_getPendingActions = baseView.findViewById(R.id.btn_getpendingaction);
+        btn_takeAction = baseView.findViewById(R.id.btn_takeAction);
+        btn_uplaod_pending_sowingdetails = baseView.findViewById(R.id.btn_uplaod_pending_sowingdetails);
+        btn_clear_local_data = baseView.findViewById(R.id.btn_clear_local_data);
+       btn_uplaod_pending_sowingdetails.setText(Html.fromHtml("Pending Sowing Data : <b>"+sqlightDatabase.getLocalSowingDetails(0).size()+"</b>"));
+
+
         btn_getPendingActions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,12 +117,85 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
+        btn_takeAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
+            /*    JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
+                jsonObject.addProperty("FilterOption", "UserCode");
+                homeAPI.getPendingActions(jsonObject);*/
+                Intent intent=new Intent(context, PendingActionList.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_uplaod_pending_sowingdetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ArrayList<SowingMasterModel> sowingMasterModels = sqlightDatabase.getLocalSowingDetails(0);
+                    Toast.makeText(context, "" + sowingMasterModels.size(), Toast.LENGTH_SHORT).show();
+                    JsonArray jsonArray = new JsonArray();
+                    JsonObject jsonObject = new JsonObject();
+
+                    for (SowingMasterModel m : sowingMasterModels) {
+                        JsonObject json = new JsonObject();
+                        json.addProperty("UniqueSrNo", m.getUniqueSrNo());
+                        json.addProperty("FarmerName", m.getUniqueSrNo());
+                        json.addProperty("MobileNo", m.getMobileNo());
+                        json.addProperty("WhatsAppNo", m.getWhatsAppNo());
+                        json.addProperty("NameOfHybrid", m.getNameOfHybrid());
+                        json.addProperty("CheckHybrid", m.getCheckHybrid());
+                        json.addProperty("CompanyOfCheckHybrid", m.getCompanyOfCheckHybrid());
+                        json.addProperty("DOS", m.getDOS());
+                        json.addProperty("Latitude", m.getLatitude());
+                        json.addProperty("longitude", m.getLongitude());
+                        json.addProperty("ResAddr", m.getResAddr());
+                        json.addProperty("ProductId", m.getProductId());
+                        json.addProperty("PendingFor", m.getPendingFor());
+                        json.addProperty("UserCode", m.getUserCode());
+                        jsonArray.add(json);
+                    }
+                    jsonObject.add("cropSowingModel", jsonArray);
+                    Log.i("Json Array is ",jsonObject.toString());
+                   homeAPI.uploadSowingDetails(jsonObject);
+
+                }catch(Exception e)
+                {
+
+                }
+
+
+            }
+        });
+        btn_clear_local_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sqlightDatabase.clearList())
+                {
+                    Toast.makeText(context, "Data Cleared", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return baseView;
     }
 
     @Override
     public void onResult(String result) {
 
+    }
+
+    @Override
+    public void onResponce(MessageModel messageModel) {
+        if(messageModel.isSuccess())
+        {
+            Toast.makeText(context, ""+messageModel.getMessage()!=null?messageModel.getMessage():"Something Went Wrong.", Toast.LENGTH_SHORT).show();
+        }else
+        {
+            Toast.makeText(context, ""+messageModel.getMessage()!=null?messageModel.getMessage():"Something Went Wrong.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -124,5 +216,12 @@ public class HomeFragment extends Fragment implements HomeListener {
         } else {
             Toast.makeText(context, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        btn_uplaod_pending_sowingdetails.setText(Html.fromHtml("Pending Sowing Data : <b>"+sqlightDatabase.getLocalSowingDetails(0).size()+"</b>"));
+
     }
 }

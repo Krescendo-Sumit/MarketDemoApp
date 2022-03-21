@@ -36,6 +36,7 @@ public class Preferences {
     public static final String ROLE_NAME = "ROLE_NAME";
     public static final String PARENT_EMP_CODE ="PARENT_EMP_CODE" ;
     public static final String PARENT_EMP_ID ="PARENT_EMP_ID" ;
+    public static final String SELECTED_UNIQSRID ="SELECTEDUNIQEARID" ;
 
     public Preferences(Context context) {
     }
