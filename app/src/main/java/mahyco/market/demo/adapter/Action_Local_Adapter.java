@@ -106,19 +106,20 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
                 @Override
                 public void onClick(View view) {
                    try{
+                       Preferences.save(context, Preferences.SELECTED_UNIQSRID, actionModel.getUniqueSrNo());
+                       Preferences.save(context, Preferences.SELECTED_PRODUCTCODE, actionModel.getProductId());
+                       Preferences.save(context, Preferences.SELECTED_PENDINGFOR, actionModel.getPendingFor());
+                       Preferences.save(context, Preferences.SELECTED_DEMOCROPSOWINGID, actionModel.getDemoCropSowingId());
+
                        int  pendingfor=Integer.parseInt(actionModel.getPendingFor().trim());
                        if (pendingfor>1) {
                            Intent intent = new Intent(context, SowingUpdateActivity.class);
-                           Preferences.save(context, Preferences.SELECTED_UNIQSRID, actionModel.getUniqueSrNo());
-                           Preferences.save(context, Preferences.SELECTED_PRODUCTCODE, actionModel.getProductId());
-                           Preferences.save(context, Preferences.SELECTED_PENDINGFOR, actionModel.getPendingFor());
                            context.startActivity(intent);
                      }else
                        {
 
                            Intent intent = new Intent(context, AddNewSowingDetails.class);
-                           Preferences.save(context, Preferences.SELECTED_UNIQSRID, actionModel.getUniqueSrNo());
-                           context.startActivity(intent);
+                            context.startActivity(intent);
 
                        }
                        }catch(Exception e)

@@ -34,6 +34,10 @@ public interface Api {
     @POST(Constants.GET_PRODUCT_CHARACTRISTICS)
     Call<CharactristicsModel> getChractristics(@Body JsonObject jsonObject);
 
+
+    @POST(Constants.UPLOAD_SOWING_UPDATE_DETAILS)
+    Call<MessageModel> uploadUpdateSowingDetails(@Body JsonObject jsonObject);
+
 /*
     @POST(Constants.COURSE_URL)
     Call<List<BhartiModel>> getCourseList(@Body JSONObject jsonObject);

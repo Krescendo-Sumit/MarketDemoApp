@@ -16,11 +16,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".view.sowingupdate.SowingUpdateActivity" android:screenOrientation="portrait">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
         <activity android:name=".view.sowingaction.AddNewSowingDetails" android:screenOrientation="portrait"/>
@@ -30,7 +26,11 @@
             android:name=".view.login.Login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MahycoMarketDemo.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"

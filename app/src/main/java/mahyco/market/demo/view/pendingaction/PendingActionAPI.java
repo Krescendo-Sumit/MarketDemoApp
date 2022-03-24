@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.PendingActionModel;
 import mahyco.market.demo.model.VillageMasterModel;
 import mahyco.market.demo.model.VillageModel;
@@ -112,6 +113,43 @@ public class PendingActionAPI {
         }
     }
 
+    public void getChartristics(JsonObject jsonObject) {
+        try {
+
+            if (!progressDialog.isShowing())
+                progressDialog.show();
+
+            Call<CharactristicsModel> call = RetrofitClient.getInstance().getMyApi().getChractristics(jsonObject);
+            call.enqueue(new Callback<CharactristicsModel>() {
+                @Override
+                public void onResponse(Call<CharactristicsModel> call, Response<CharactristicsModel> response) {
+
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    if (response.body() != null) {
+                        CharactristicsModel result = response.body();
+                        try {
+                            resultOutput.onResult(result);
+                        } catch (NullPointerException e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CharactristicsModel> call, Throwable t) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Log.e("Error is", t.getMessage());
+                }
+            });
+        } catch (Exception e) {
+
+        }
+    }
 
 
 

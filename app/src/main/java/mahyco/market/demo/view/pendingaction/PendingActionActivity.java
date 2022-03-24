@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -18,9 +20,11 @@ import java.util.List;
 import mahyco.market.demo.R;
 import mahyco.market.demo.adapter.ActionAdapter;
 import mahyco.market.demo.model.ActionModel;
+import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.PendingActionModel;
 import mahyco.market.demo.model.VillageMasterModel;
 import mahyco.market.demo.model.VillageModel;
+import mahyco.market.demo.model.parametermodels.ParamterModel;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
 
@@ -50,9 +54,22 @@ RecyclerView rc_pendingaction;
         pendingActionAPI.getPendingActions(jsonObject);
     }
 
-    @Override
-    public void onResult(String result) {
 
+    @Override
+    public void onResult(CharactristicsModel result) {
+        Toast.makeText(context, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "" + result.isSuccess(), Toast.LENGTH_SHORT).show();
+
+        List<ParamterModel> paramterModels = result.getEntityModel().getParamList();
+        for (ParamterModel model : paramterModels) {
+
+            Log.i("Row :", "" + new Gson().toJson(model));
+        }
+        if (sqlightDatabase.addCharactristics(paramterModels)) {
+            Toast.makeText(context, "Characteristics Added Success", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Charactristics Not Added .", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

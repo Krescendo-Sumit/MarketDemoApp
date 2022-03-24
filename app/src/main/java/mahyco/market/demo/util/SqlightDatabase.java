@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.Vector;
 
 import mahyco.market.demo.model.ActionModel;
+import mahyco.market.demo.model.KeyValue;
 import mahyco.market.demo.model.LocalCharactersticsModel;
 import mahyco.market.demo.model.SowingMasterModel;
+import mahyco.market.demo.model.UpdateSowingModel;
 import mahyco.market.demo.model.VillageModel;
 import mahyco.market.demo.model.parametermodels.ParamterModel;
 
@@ -26,7 +28,7 @@ import mahyco.market.demo.model.parametermodels.ParamterModel;
 public class SqlightDatabase extends SQLiteOpenHelper {
 
     final static String DBName = "db_marketdemo";
-    final static int version = 4;
+    final static int version = 5;
     private static final String TBL_SOWING_MASTER = "TBL_SOWING_MASTER";
     private static final String TBL_CHARACTRISTICS = "TBL_CHARACTRISTICS";
     long count = 0;
@@ -36,7 +38,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     public SqlightDatabase(Context context) {
         super(context, DBName, null, version);
-        this.context=context;
+        this.context = context;
         // TODO Auto-generated constructor stub
     }
 
@@ -90,7 +92,6 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         db.execSQL(qry_create_tbl_village);
         Log.i("Query ", "TBL_VILLAGE SUCCESS");
 
-
         String qry_create_tbl_sowing_master = "CREATE TABLE IF NOT EXISTS " + TBL_SOWING_MASTER + " (" +
                 "      UniqueSrNo TEXT," +
                 "      FarmerName  TEXT," +
@@ -112,7 +113,6 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 ")";
         db.execSQL(qry_create_tbl_sowing_master);
 
-
         String qry_create_tbl_chractristics = "Create TABLE IF NOT EXISTS " + TBL_CHARACTRISTICS + " (" +
                 "uniqueno Text," +
                 "farmername Text," +
@@ -124,8 +124,30 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 "downloadstatus INTEGER" +
                 ")";
         db.execSQL(qry_create_tbl_chractristics);
-        Log.i("Query ", "TBL_VILLAGE SUCCESS");
 
+        String qry_create_tbl_menu = "Create Table  IF NOT EXISTS  TBL_MENU_MASTER(" +
+                "MenuId INTEGER," +
+                "KeyValue TEXT," +
+                "CreatedDt TEXT," +
+                "UniqueSrNo TEXT," +
+                "Pendingfor INTEGER," +
+                "syncstatus INTEGER" +
+                ")";
+        db.execSQL(qry_create_tbl_menu);
+        Log.i("Query ", "qry_create_tbl_menu SUCCESS");
+        String qry_update_sowing_master = "CREATE TABLE  IF NOT EXISTS  TBL_UPDATE_SOWING_MASTER" +
+                "(" +
+                "DemoCropSowingId INTEGER," +
+                "UniqueSrNo TEXT," +
+                "ProductId INTEGER," +
+                "ImageName TEXT," +
+                "ImageinByte TEXT," +
+                "PendingFor INT," +
+                "UserCode TEXT," +
+                "syncstatus INTEGER" +
+                ")";
+        db.execSQL(qry_update_sowing_master);
+        Log.i("Query ", "qry_update_sowing_master SUCCESS");
 
     }
 
@@ -133,6 +155,39 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         Log.i("Databse version", "DB VERSION CHANGE  TO " + arg1);
         onCreate(db);
+    }
+
+    public boolean clearList() {
+
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "delete from " + TBL_SOWING_MASTER;
+            mydb.execSQL(q);
+            q = "delete from " + TBL_VILLAGE_MASTER;
+            mydb.execSQL(q);
+            q = "delete from " + TABLE_ACTION_PENDING;
+            mydb.execSQL(q);
+
+            q = "delete from " + TBL_CHARACTRISTICS;
+            mydb.execSQL(q);
+
+            q = "delete from TBL_MENU_MASTER";
+            mydb.execSQL(q);
+
+            q = "delete from TBL_UPDATE_SOWING_MASTER";
+            mydb.execSQL(q);
+            //String q = "delete from tbl_customersatyam";
+
+            Log.i("Query is -------> ", "" + q);
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is Clear List", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
     }
 
     public boolean addPendingAction(ActionModel actionModel) {
@@ -185,6 +240,37 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
+
+    public boolean addSowingUpdateMaster(int DemoCropSowingId, String UniqueSrNo, int ProductId, String ImageName, String ImageinByte, int PendingFor, String UserCode) {
+
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+            ContentValues values = new ContentValues();
+
+            values.put("DemoCropSowingId", DemoCropSowingId);
+            values.put("UniqueSrNo", UniqueSrNo);
+            values.put("ProductId", ProductId);
+            values.put("ImageName", ImageName);// TEXT," +
+            values.put("ImageinByte", ImageinByte);// TEXT," +
+            values.put("PendingFor", PendingFor);// INT," +
+            values.put("UserCode", UserCode);// TEXT," +
+            values.put("syncstatus", 0);// INTEGER" +
+
+            mydb.insert("TBL_UPDATE_SOWING_MASTER", null, values);
+            mydb.close();
+            Log.i("Query is 123-------> ", "");
+
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is Add User", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
+
     public boolean addVillages(List<VillageModel> actionModel) {
 
         SQLiteDatabase mydb = null;
@@ -215,30 +301,62 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
+
+    public boolean addMenus(List<KeyValue> actionModel) {
+
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+
+            for (KeyValue v : actionModel) {
+                ContentValues values = new ContentValues();
+
+                values.put("MenuId", v.getSb_id());//," +
+                values.put("KeyValue", v.getValue());// TEXT," +
+                values.put("CreatedDt", v.getCreatedDt());// TEXT," +
+                values.put("UniqueSrNo", v.getUniqueId());// TEXT," +
+                values.put("Pendingfor", v.getPendingFor());// INTEGER," +
+                values.put("syncstatus", 0);// INTEGER" +
+
+                mydb.insert("TBL_MENU_MASTER", null, values);
+
+                Log.i("Query is -------> ", "");
+            }
+            mydb.close();
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is Add User", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
+
     public boolean addCharactristics(List<ParamterModel> actionModel) {
 
         SQLiteDatabase mydb = null;
         try {
-            int cnt=0;
+            int cnt = 0;
             mydb = this.getReadableDatabase();
 
             for (ParamterModel v : actionModel) {
                 cnt++;
                 ContentValues values = new ContentValues();
-                values.put("uniqueno", Preferences.get(context,Preferences.SELECTED_UNIQSRID)); //Text," +
-                values.put("farmername","" ); // Text," +
-                values.put("visit_id", Preferences.get(context,Preferences.SELECTED_PENDINGFOR)); // INTEGER," +
-                values.put("product_id",  Preferences.get(context,Preferences.SELECTED_PRODUCTCODE)); // INTEGER," +
+                values.put("uniqueno", Preferences.get(context, Preferences.SELECTED_UNIQSRID)); //Text," +
+                values.put("farmername", ""); // Text," +
+                values.put("visit_id", Preferences.get(context, Preferences.SELECTED_PENDINGFOR)); // INTEGER," +
+                values.put("product_id", Preferences.get(context, Preferences.SELECTED_PRODUCTCODE)); // INTEGER," +
                 values.put("selectedvalue", ""); // Text," +
                 values.put("paramList", new Gson().toJson(v)); // Text," +
                 values.put("syncstatus", 0); // INTEGER," +
                 values.put("downloadstatus", 0); // INTEGER" +
 
-                        mydb.insert(TBL_CHARACTRISTICS, null, values);
+                mydb.insert(TBL_CHARACTRISTICS, null, values);
 
                 Log.i("Query is -------> ", "111");
             }
-            Log.i("RowAdded is -------> ", ""+cnt);
+            Log.i("RowAdded is -------> ", "" + cnt);
             mydb.close();
             return true;
         } catch (Exception e) {
@@ -249,15 +367,16 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public ArrayList<LocalCharactersticsModel> getChracteristics(String productid ,String uniqueno) {
+
+    public ArrayList<LocalCharactersticsModel> getChracteristics(String productid, String uniqueno) {
         SQLiteDatabase mydb = null;
         String k = "";
         LocalCharactersticsModel localCharactersticsModel = null;
         ArrayList<LocalCharactersticsModel> arrayLists = new ArrayList<LocalCharactersticsModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM " +TBL_CHARACTRISTICS + " where product_id=" + productid + " and uniqueno='"+uniqueno.trim()+"'";
-           Log.i("Query ",q);
+            String q = "SELECT  * FROM " + TBL_CHARACTRISTICS + " where product_id=" + productid + " and uniqueno='" + uniqueno.trim() + "'";
+            Log.i("Query ", q);
             Cursor c = mydb.rawQuery(q, null);
 
             while (c.moveToNext()) {
@@ -275,7 +394,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             }
             return arrayLists;
         } catch (Exception e) {
-            Log.i("Error getdata",e.getMessage());
+            Log.i("Error getdata", e.getMessage());
             return null;
         } finally {
             mydb.close();
@@ -322,34 +441,6 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
-
-    public boolean clearList() {
-
-        SQLiteDatabase mydb = null;
-        try {
-            mydb = this.getReadableDatabase();
-            String q = "delete from " + TBL_SOWING_MASTER;
-            mydb.execSQL(q);
-            q = "delete from " + TBL_VILLAGE_MASTER;
-            mydb.execSQL(q);
-            q = "delete from " + TABLE_ACTION_PENDING;
-            mydb.execSQL(q);
-
-            q = "delete from " + TBL_CHARACTRISTICS;
-            mydb.execSQL(q);
-
-            //String q = "delete from tbl_customersatyam";
-
-            Log.i("Query is -------> ", "" + q);
-            return true;
-        } catch (Exception e) {
-            Log.i("Error is Clear List", "" + e.getMessage());
-            return false;
-        } finally {
-            mydb.close();
-        }
-
-    }
 
     public boolean updateCStatus(String id, String noview, String fc, String fcdate, String sc, String scdate, String tc, String tcdate, String frc, String frcdate, String pwd) {
 
@@ -507,8 +598,68 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public ArrayList<UpdateSowingModel> getUpdateSowingDetails(int status) {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        UpdateSowingModel updateSowingModel = null;
+        ArrayList<UpdateSowingModel> arrayLists = new ArrayList<UpdateSowingModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "SELECT  * FROM TBL_UPDATE_SOWING_MASTER where syncstatus="+status;
+            Cursor c = mydb.rawQuery(q, null);
+            while (c.moveToNext()) {
+                Log.i("Row", c.getString(3));
+                updateSowingModel = new UpdateSowingModel();
+
+                updateSowingModel.setDemoCropSowingId(c.getInt(0));
+                updateSowingModel.setUniqueSrNo(c.getString(1));
+                updateSowingModel.setProductId(c.getInt(2));
+                updateSowingModel.setImageName(c.getString(3));
+                updateSowingModel.setImageinByte(c.getString(4));
+                updateSowingModel.setPendingFor(c.getInt(5));
+                updateSowingModel.setUserCode(c.getString(6));
+                updateSowingModel.setSyncstatus(c.getInt(7));
+
+                arrayLists.add(updateSowingModel);
+            }
+            return arrayLists;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            mydb.close();
+        }
+    }
+
+    public ArrayList<KeyValue> getMenuList(int pendingfor,String uniqueno,int status) {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        KeyValue keyValue = null;
+        ArrayList<KeyValue> arrayLists = new ArrayList<KeyValue>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "SELECT  * FROM TBL_MENU_MASTER where syncstatus="+status;
+            Cursor c = mydb.rawQuery(q, null);
+            while (c.moveToNext()) {
+                Log.i("Row", c.getString(3));
+                keyValue = new KeyValue();
+
+                keyValue.setSb_id(c.getInt(0));//MenuId", v.getSb_id());//," +
+                keyValue.setValue(c.getString(1));//"KeyValue", v.getValue());// TEXT," +
+                keyValue.setCreatedDt(c.getString(2));//"CreatedDt", "2022/03/02");// TEXT," +
+                keyValue.setUniqueId(c.getString(3));//);t("UniqueSrNo", v.getUniqueId());// TEXT," +
+                keyValue.setPendingFor(c.getInt(4));//).put("Pendingfor", v.getPendingFor());// INTEGER," +
+                keyValue.setSyncstatus(c.getInt(5));//).put("syncstatus", 0);// INTEGER" +
 
 
+                arrayLists.add(keyValue);
+            }
+            return arrayLists;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            mydb.close();
+        }
+    }
 
     public ArrayList<SowingMasterModel> getLocalSowingDetails(int status) {
         SQLiteDatabase mydb = null;

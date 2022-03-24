@@ -39,6 +39,7 @@ public class Preferences {
     public static final String SELECTED_UNIQSRID ="SELECTEDUNIQEARID" ;
     public static final String SELECTED_PRODUCTCODE ="SELECTED_PRODUCT" ;
     public static final String SELECTED_PENDINGFOR ="SELECTED_PENDINGFOR" ;
+    public static final String SELECTED_DEMOCROPSOWINGID = "DEMO_CROP_SOWING_ID";
 
     public Preferences(Context context) {
     }

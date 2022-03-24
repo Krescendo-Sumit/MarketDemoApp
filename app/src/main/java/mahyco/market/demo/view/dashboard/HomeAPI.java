@@ -109,4 +109,43 @@ public class HomeAPI {
 
         }
     }
+    public void uploadUdatedSowingDetails(JsonObject jsonObject)
+    {
+        try {
+
+            if (!progressDialog.isShowing())
+                progressDialog.show();
+
+            Call<MessageModel> call = RetrofitClient.getInstance().getMyApi().uploadUpdateSowingDetails(jsonObject);
+            call.enqueue(new Callback<MessageModel>() {
+                @Override
+                public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    //  Toast.makeText(CourseList.this, "Calling..", Toast.LENGTH_SHORT).show();
+
+                    if (response.body() != null) {
+                        MessageModel result = response.body();
+                        try {
+                            resultOutput.onResponce(result);
+                        } catch (NullPointerException e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MessageModel> call, Throwable t) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Log.e("Error is", t.getMessage());
+                }
+            });
+        } catch (Exception e) {
+
+        }
+    }
 }

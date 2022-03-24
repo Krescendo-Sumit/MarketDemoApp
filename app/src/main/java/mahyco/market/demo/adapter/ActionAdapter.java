@@ -111,16 +111,24 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.btnDownloadPA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("filterValue", actionModel.getTalukaId());
-                    jsonObject.addProperty("FilterOption", "TalukaId");
-                    pendingActionAPI.getVillageList(jsonObject);
+                    int  pendingfor=Integer.parseInt(actionModel.getPendingFor().trim());
+                    if (pendingfor>1) {
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("ProductId", actionModel.getProductId());
+                        jsonObject.addProperty("VisitStageId", actionModel.getPendingFor());
+                        pendingActionAPI.getChartristics(jsonObject);
 
-                    if(sqlightDatabase.addPendingAction(actionModel))
-                    {
+                    }else {
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("filterValue", actionModel.getTalukaId());
+                        jsonObject.addProperty("FilterOption", "TalukaId");
+                        pendingActionAPI.getVillageList(jsonObject);
+
+
+                    }
+                    if (sqlightDatabase.addPendingAction(actionModel)) {
                         Toast.makeText(context, "Data Saved Locally", Toast.LENGTH_SHORT).show();
-                    }else
-                    {
+                    } else {
                         Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
                     }
                 }

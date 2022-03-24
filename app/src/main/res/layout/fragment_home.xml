@@ -22,7 +22,13 @@
             android:text="Upload"
             android:drawableRight="@drawable/ic_upload"
             />
-
+        <Button
+            android:id="@+id/btn_uplaod_update_sowingdetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Update "
+            android:drawableRight="@drawable/ic_upload"
+            />
 
 
         <Button
