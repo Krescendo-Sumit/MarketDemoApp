@@ -3,8 +3,8 @@
     package="mahyco.market.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,18 +14,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MahycoMarketDemo"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.sowingaction.AddNewSowingDetails"></activity>
-        <activity android:name=".view.actionlist.PendingActionList" />
-        <activity android:name=".view.pendingaction.PendingActionActivity" />
-        <activity
-            android:name=".view.login.Login"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MahycoMarketDemo.NoActionBar">
+        <activity android:name=".view.sowingupdate.SowingUpdateActivity" android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".view.sowingaction.AddNewSowingDetails" android:screenOrientation="portrait"/>
+        <activity android:name=".view.actionlist.PendingActionList" android:screenOrientation="portrait"/>
+        <activity android:name=".view.pendingaction.PendingActionActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.login.Login"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MahycoMarketDemo.NoActionBar">
+
         </activity>
         <activity
             android:name=".MainActivity"

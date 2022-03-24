@@ -37,6 +37,8 @@ public class Preferences {
     public static final String PARENT_EMP_CODE ="PARENT_EMP_CODE" ;
     public static final String PARENT_EMP_ID ="PARENT_EMP_ID" ;
     public static final String SELECTED_UNIQSRID ="SELECTEDUNIQEARID" ;
+    public static final String SELECTED_PRODUCTCODE ="SELECTED_PRODUCT" ;
+    public static final String SELECTED_PENDINGFOR ="SELECTED_PENDINGFOR" ;
 
     public Preferences(Context context) {
     }

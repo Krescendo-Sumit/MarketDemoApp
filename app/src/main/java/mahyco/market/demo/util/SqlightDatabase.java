@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,21 +17,26 @@ import java.util.List;
 import java.util.Vector;
 
 import mahyco.market.demo.model.ActionModel;
+import mahyco.market.demo.model.LocalCharactersticsModel;
 import mahyco.market.demo.model.SowingMasterModel;
 import mahyco.market.demo.model.VillageModel;
+import mahyco.market.demo.model.parametermodels.ParamterModel;
 
 
 public class SqlightDatabase extends SQLiteOpenHelper {
 
     final static String DBName = "db_marketdemo";
-    final static int version = 3;
+    final static int version = 4;
     private static final String TBL_SOWING_MASTER = "TBL_SOWING_MASTER";
+    private static final String TBL_CHARACTRISTICS = "TBL_CHARACTRISTICS";
     long count = 0;
     final String TABLE_ACTION_PENDING = "TBL_ACTION";
     final String TBL_VILLAGE_MASTER = "TBL_VILLAGE";
+    Context context;
 
     public SqlightDatabase(Context context) {
         super(context, DBName, null, version);
+        this.context=context;
         // TODO Auto-generated constructor stub
     }
 
@@ -104,6 +111,19 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 "      DownlaodStatus INTEGER" +
                 ")";
         db.execSQL(qry_create_tbl_sowing_master);
+
+
+        String qry_create_tbl_chractristics = "Create TABLE IF NOT EXISTS " + TBL_CHARACTRISTICS + " (" +
+                "uniqueno Text," +
+                "farmername Text," +
+                "visit_id INTEGER," +
+                "product_id INTEGER," +
+                "selectedvalue Text," +
+                "paramList Text," +
+                "syncstatus INTEGER," +
+                "downloadstatus INTEGER" +
+                ")";
+        db.execSQL(qry_create_tbl_chractristics);
         Log.i("Query ", "TBL_VILLAGE SUCCESS");
 
 
@@ -195,6 +215,74 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
+    public boolean addCharactristics(List<ParamterModel> actionModel) {
+
+        SQLiteDatabase mydb = null;
+        try {
+            int cnt=0;
+            mydb = this.getReadableDatabase();
+
+            for (ParamterModel v : actionModel) {
+                cnt++;
+                ContentValues values = new ContentValues();
+                values.put("uniqueno", Preferences.get(context,Preferences.SELECTED_UNIQSRID)); //Text," +
+                values.put("farmername","" ); // Text," +
+                values.put("visit_id", Preferences.get(context,Preferences.SELECTED_PENDINGFOR)); // INTEGER," +
+                values.put("product_id",  Preferences.get(context,Preferences.SELECTED_PRODUCTCODE)); // INTEGER," +
+                values.put("selectedvalue", ""); // Text," +
+                values.put("paramList", new Gson().toJson(v)); // Text," +
+                values.put("syncstatus", 0); // INTEGER," +
+                values.put("downloadstatus", 0); // INTEGER" +
+
+                        mydb.insert(TBL_CHARACTRISTICS, null, values);
+
+                Log.i("Query is -------> ", "111");
+            }
+            Log.i("RowAdded is -------> ", ""+cnt);
+            mydb.close();
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is ", "TBL_CHARACTRISTICS : " + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
+    public ArrayList<LocalCharactersticsModel> getChracteristics(String productid ,String uniqueno) {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        LocalCharactersticsModel localCharactersticsModel = null;
+        ArrayList<LocalCharactersticsModel> arrayLists = new ArrayList<LocalCharactersticsModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "SELECT  * FROM " +TBL_CHARACTRISTICS + " where product_id=" + productid + " and uniqueno='"+uniqueno.trim()+"'";
+           Log.i("Query ",q);
+            Cursor c = mydb.rawQuery(q, null);
+
+            while (c.moveToNext()) {
+                Log.i("Row", c.getString(3));
+                localCharactersticsModel = new LocalCharactersticsModel();
+                localCharactersticsModel.setUniqueno(c.getString(0));// INTEGER," +
+                localCharactersticsModel.setFarmername(c.getString(1));//  INTEGER," +
+                localCharactersticsModel.setVisit_id(c.getInt(2));// TEXT," +
+                localCharactersticsModel.setProduct_id(c.getInt(3));// TEXT," +
+                localCharactersticsModel.setSelectedvalue(c.getString(4));//  TEXT," +
+                localCharactersticsModel.setParamList(c.getString(5));//  TEXT," +
+                localCharactersticsModel.setSyncstatus(c.getInt(6));// INTEGER," +
+                localCharactersticsModel.setDownloadstatus(c.getInt(7));// TEXT" +
+                arrayLists.add(localCharactersticsModel);
+            }
+            return arrayLists;
+        } catch (Exception e) {
+            Log.i("Error getdata",e.getMessage());
+            return null;
+        } finally {
+            mydb.close();
+        }
+    }
+
+
     public boolean addSowingMaster(SowingMasterModel sowingMasterModel) {
 
         SQLiteDatabase mydb = null;
@@ -214,7 +302,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             values.put("ResAddr", sowingMasterModel.getResAddr());// TEXT," +
             values.put("ProductId", sowingMasterModel.getProductId());// INTEGER," +
             values.put("PendingFor", sowingMasterModel.getPendingFor());// INTEGER," +
-            values.put("VillageName", sowingMasterModel.getUniqueSrNo());// TEXT," +
+            values.put("VillageName", sowingMasterModel.getVillageName());// TEXT," +
             values.put("UserCode", sowingMasterModel.getUserCode());// TEXT," +
             values.put("SyncStatus", sowingMasterModel.getSyncStatus());// INTERGER," +
             values.put("DownlaodStatus", sowingMasterModel.getDownlaodStatus());// INTEGER" +
@@ -240,11 +328,14 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         SQLiteDatabase mydb = null;
         try {
             mydb = this.getReadableDatabase();
-            String q = "delete from "+TBL_SOWING_MASTER;
+            String q = "delete from " + TBL_SOWING_MASTER;
             mydb.execSQL(q);
-             q = "delete from "+TBL_VILLAGE_MASTER;
+            q = "delete from " + TBL_VILLAGE_MASTER;
             mydb.execSQL(q);
-             q = "delete from "+TABLE_ACTION_PENDING;
+            q = "delete from " + TABLE_ACTION_PENDING;
+            mydb.execSQL(q);
+
+            q = "delete from " + TBL_CHARACTRISTICS;
             mydb.execSQL(q);
 
             //String q = "delete from tbl_customersatyam";
@@ -265,7 +356,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         SQLiteDatabase mydb = null;
         try {
             if (fc.equals("YES") || sc.equals("YES") || tc.equals("YES") || frc.equals("YES")) {
-              //  updateVCount(0);
+                //  updateVCount(0);
             }
             mydb = this.getReadableDatabase();
             String q = "update tbl_cstatus set fc='" + fc + "',fcdate='" + fcdate + "',sc='" + sc + "',scdate='" + scdate + "',tc='" + tc + "',tcdate='" + tcdate + "',frc='" + frc + "',frcdate='" + frcdate + "',pwd='" + pwd + "' where id=2";
@@ -417,6 +508,8 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     }
 
 
+
+
     public ArrayList<SowingMasterModel> getLocalSowingDetails(int status) {
         SQLiteDatabase mydb = null;
         String k = "";
@@ -424,7 +517,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM " + TBL_SOWING_MASTER + " where SyncStatus=" + status ;
+            String q = "SELECT  * FROM " + TBL_SOWING_MASTER + " where SyncStatus=" + status;
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 Log.i("Row", c.getString(3));

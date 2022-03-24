@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                     for (SowingMasterModel m : sowingMasterModels) {
                         JsonObject json = new JsonObject();
                         json.addProperty("UniqueSrNo", m.getUniqueSrNo());
-                        json.addProperty("FarmerName", m.getUniqueSrNo());
+                        json.addProperty("FarmerName", m.getFarmerName());
                         json.addProperty("MobileNo", m.getMobileNo());
                         json.addProperty("WhatsAppNo", m.getWhatsAppNo());
                         json.addProperty("NameOfHybrid", m.getNameOfHybrid());
@@ -154,7 +154,9 @@ public class HomeFragment extends Fragment implements HomeListener {
                         json.addProperty("ResAddr", m.getResAddr());
                         json.addProperty("ProductId", m.getProductId());
                         json.addProperty("PendingFor", m.getPendingFor());
+                        json.addProperty("VillageName", m.getVillageName());
                         json.addProperty("UserCode", m.getUserCode());
+
                         jsonArray.add(json);
                     }
                     jsonObject.add("cropSowingModel", jsonArray);

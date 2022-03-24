@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.MessageModel;
 import mahyco.market.demo.model.PendingActionModel;
 import mahyco.market.demo.model.VillageMasterModel;
@@ -29,6 +30,9 @@ public interface Api {
 
     @POST(Constants.UPLOAD_SOWING_DETAILS)
     Call<MessageModel> uploadSowingDetails(@Body JsonObject jsonObject);
+
+    @POST(Constants.GET_PRODUCT_CHARACTRISTICS)
+    Call<CharactristicsModel> getChractristics(@Body JsonObject jsonObject);
 
 /*
     @POST(Constants.COURSE_URL)
