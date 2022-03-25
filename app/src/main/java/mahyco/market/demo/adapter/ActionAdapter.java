@@ -47,8 +47,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
         this.actionModelArrayList = actionModels;
         Log.i("Action Count:", ">>" + actionModels.size());
         this.context = context;
-        sqlightDatabase=new SqlightDatabase(context);
-        this.pendingActionAPI=pendingActionAPI;
+        sqlightDatabase = new SqlightDatabase(context);
+        this.pendingActionAPI = pendingActionAPI;
     }
 
     @NonNull
@@ -106,30 +106,45 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.tvVisitStageId.setText(actionModel.getVisitStageId());
             holder.tvVisitStage.setText(actionModel.getVisitStage());
             holder.tvDemoCropSowingId.setText(actionModel.getDemoCropSowingId());
-
+            int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
+            if (k > 0) {
+                holder.btnDownloadPA.setText("Already Downloaded");
+            }
 
             holder.btnDownloadPA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int  pendingfor=Integer.parseInt(actionModel.getPendingFor().trim());
-                    if (pendingfor>1) {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("ProductId", actionModel.getProductId());
-                        jsonObject.addProperty("VisitStageId", actionModel.getPendingFor());
-                        pendingActionAPI.getChartristics(jsonObject);
+                  //  Toast.makeText(context, "" + sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()), Toast.LENGTH_SHORT).show();
 
-                    }else {
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("filterValue", actionModel.getTalukaId());
-                        jsonObject.addProperty("FilterOption", "TalukaId");
-                        pendingActionAPI.getVillageList(jsonObject);
-
-
-                    }
-                    if (sqlightDatabase.addPendingAction(actionModel)) {
-                        Toast.makeText(context, "Data Saved Locally", Toast.LENGTH_SHORT).show();
+                    if (k > 0) {
+                        Toast.makeText(context, "Already Exist!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                        int pendingfor = Integer.parseInt(actionModel.getPendingFor().trim());
+                        if (pendingfor > 1) {
+                            if (sqlightDatabase.getChracteristics(actionModel.getProductId(), actionModel.getUniqueSrNo()).size() > 0) {
+
+                            } else {
+                                JsonObject jsonObject = new JsonObject();
+                                jsonObject.addProperty("ProductId", actionModel.getProductId());
+                                jsonObject.addProperty("VisitStageId", actionModel.getPendingFor());
+                                pendingActionAPI.getChartristics(jsonObject);
+                            }
+                        } else {
+                            if (sqlightDatabase.getLocalVillage(actionModel.getTalukaId()).size() > 0) {
+
+                            } else {
+                                JsonObject jsonObject = new JsonObject();
+                                jsonObject.addProperty("filterValue", actionModel.getTalukaId());
+                                jsonObject.addProperty("FilterOption", "TalukaId");
+                                pendingActionAPI.getVillageList(jsonObject);
+                            }
+
+                        }
+                        if (sqlightDatabase.addPendingAction(actionModel)) {
+                            Toast.makeText(context, "Data Saved Locally", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });

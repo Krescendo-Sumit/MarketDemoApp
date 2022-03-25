@@ -442,17 +442,12 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     }
 
 
-    public boolean updateCStatus(String id, String noview, String fc, String fcdate, String sc, String scdate, String tc, String tcdate, String frc, String frcdate, String pwd) {
+    public boolean updateSowingMasterStatus(String UniqueNo) {
 
         SQLiteDatabase mydb = null;
         try {
-            if (fc.equals("YES") || sc.equals("YES") || tc.equals("YES") || frc.equals("YES")) {
-                //  updateVCount(0);
-            }
             mydb = this.getReadableDatabase();
-            String q = "update tbl_cstatus set fc='" + fc + "',fcdate='" + fcdate + "',sc='" + sc + "',scdate='" + scdate + "',tc='" + tc + "',tcdate='" + tcdate + "',frc='" + frc + "',frcdate='" + frcdate + "',pwd='" + pwd + "' where id=2";
-            //String q = "delete from tbl_customersatyam";
-
+            String q = "update TBL_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='"+UniqueNo+"'";
             Log.i("Query is -------> ", "" + q);
             mydb.execSQL(q);
             return true;
@@ -464,7 +459,23 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
 
     }
+    public boolean updateSowingUpdateMasterStatus(String UniqueNo) {
 
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "update TBL_UPDATE_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='"+UniqueNo+"'";
+            Log.i("Query is -------> ", "" + q);
+            mydb.execSQL(q);
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is Add User", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
 
     public ArrayList<ActionModel> getLocalActionsList() {
         SQLiteDatabase mydb = null;
@@ -716,5 +727,51 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public int getSowingMasterCount(String uniquenumber)
+    {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        int cnt=0;
+        SowingMasterModel sowingMasterModel = null;
+        ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "select * from TBL_ACTION where UniqueSrNo='"+uniquenumber+"'";
+            Log.i("Query ",q);
+            Cursor c = mydb.rawQuery(q, null);
+            while (c.moveToNext()) {
+                cnt++;
+            }
+
+            return  cnt;
+        } catch (Exception e) {
+            return cnt;
+        } finally {
+            mydb.close();
+        }
+    }
+    public int getSowingUpdateMasterCount(String uniquenumber)
+    {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        int cnt=0;
+        SowingMasterModel sowingMasterModel = null;
+        ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "select * from TBL_UPDATE_SOWING_MASTER where UniqueSrNo='"+uniquenumber+"'";
+            Log.i("Query ",q);
+            Cursor c = mydb.rawQuery(q, null);
+            while (c.moveToNext()) {
+                cnt++;
+            }
+
+            return  cnt;
+        } catch (Exception e) {
+            return cnt;
+        } finally {
+            mydb.close();
+        }
+    }
 
 }

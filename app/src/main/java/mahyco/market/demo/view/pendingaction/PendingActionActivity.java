@@ -57,8 +57,8 @@ RecyclerView rc_pendingaction;
 
     @Override
     public void onResult(CharactristicsModel result) {
-        Toast.makeText(context, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(context, "" + result.isSuccess(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context, "" + result.isSuccess(), Toast.LENGTH_SHORT).show();
 
         List<ParamterModel> paramterModels = result.getEntityModel().getParamList();
         for (ParamterModel model : paramterModels) {

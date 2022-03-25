@@ -15,28 +15,18 @@
         android:orientation="vertical"
         android:padding="50dp">
 
-        <Button
-            android:id="@+id/btn_uplaod_pending_sowingdetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload"
-            android:drawableRight="@drawable/ic_upload"
-            />
-        <Button
-            android:id="@+id/btn_uplaod_update_sowingdetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload Update "
-            android:drawableRight="@drawable/ic_upload"
-            />
-
 
         <Button
             android:id="@+id/btn_takeAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comforta"
-            android:text="Take Action" />
+            android:text="Add Sowing Details" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_getpendingaction"
@@ -44,6 +34,72 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/comforta"
             android:text="Download Pending Action" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_uplaod_update_sowingdetails"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableRight="@drawable/ic_upload"
+                android:text="0"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   " />
+
+            <Button
+                android:id="@+id/btn_uplaod_pending_sowingdetails"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableRight="@drawable/ic_upload"
+                android:text="0"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Click to Upload Update Entry" />
+
+            <TextView
+                android:id="@+id/textView3a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   " />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Click to Upload New Sowing Entry" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_clear_local_data"

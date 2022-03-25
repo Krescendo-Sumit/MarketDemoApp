@@ -128,7 +128,7 @@ public class HomeAPI {
                     if (response.body() != null) {
                         MessageModel result = response.body();
                         try {
-                            resultOutput.onResponce(result);
+                            resultOutput.onResponceUpdate(result);
                         } catch (NullPointerException e) {
                             Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {

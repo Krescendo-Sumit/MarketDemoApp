@@ -140,13 +140,13 @@ public class AddNewSowingDetails extends AppCompatActivity {
                             else
                                 ssd = "" + selectedday;
 
-                            String dd = ssd + "-" + (ssm) + "-" + selectedyear;
+                            String dd = selectedyear + "/" + (ssm) + "/" + ssd;
                             edDateOfSowing.setText(dd);
 
                         }
                     }, mYear, mMonth, mDay);
                     //mDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
-                    mDatePicker.setTitle("Delivery Date");
+                    mDatePicker.setTitle("Sowing Date");
                     mDatePicker.show();
 
                 }

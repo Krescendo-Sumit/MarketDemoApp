@@ -104,13 +104,11 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_uplaod_pending_sowingdetails = baseView.findViewById(R.id.btn_uplaod_pending_sowingdetails);
         btn_clear_local_data = baseView.findViewById(R.id.btn_clear_local_data);
         btn_uplaod_update_sowingdetails = baseView.findViewById(R.id.btn_uplaod_update_sowingdetails);
-        btn_uplaod_pending_sowingdetails.setText(Html.fromHtml("Pending Sowing Data : <b>" + sqlightDatabase.getLocalSowingDetails(0).size() + "</b>"));
-
-
+        showUploadCount();
         btn_getPendingActions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
             /*    JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
                 jsonObject.addProperty("FilterOption", "UserCode");
@@ -123,7 +121,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_takeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
             /*    JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
                 jsonObject.addProperty("FilterOption", "UserCode");
@@ -178,6 +176,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                 if (sqlightDatabase.clearList()) {
                     Toast.makeText(context, "Data Cleared", Toast.LENGTH_SHORT).show();
                 }
+                showUploadCount();
             }
         });
 
@@ -232,10 +231,47 @@ public class HomeFragment extends Fragment implements HomeListener {
     @Override
     public void onResponce(MessageModel messageModel) {
         if (messageModel.isSuccess()) {
+            String unicno=Preferences.get(context,Preferences.SELECTED_UNIQSRID);
+
+            if(sqlightDatabase.updateSowingMasterStatus(unicno.trim()))
+            {
+                Toast.makeText(context, "Data Sync Successfully.", Toast.LENGTH_SHORT).show();
+            }
             Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
         }
+        if(messageModel.getMessage().contains("Data Already Present for Sowing"))
+        {
+            String unicno=Preferences.get(context,Preferences.SELECTED_UNIQSRID);
+
+            if(sqlightDatabase.updateSowingMasterStatus(unicno.trim()))
+            {
+                Toast.makeText(context, "Data Sync Successfully.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        showUploadCount();
+    }
+
+    @Override
+    public void onResponceUpdate(MessageModel messageModel) {
+        if (messageModel.isSuccess()) {
+            String unicno=Preferences.get(context,Preferences.SELECTED_UNIQSRID);
+            if(sqlightDatabase.updateSowingUpdateMasterStatus(unicno.trim()))
+            {
+                Toast.makeText(context, "Data Sync Successfully.", Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+        }
+        showUploadCount();
+    }
+
+    public  void showUploadCount() {
+        btn_uplaod_update_sowingdetails.setText(""+ sqlightDatabase.getUpdateSowingDetails(0).size());
+        btn_uplaod_pending_sowingdetails.setText(""+ sqlightDatabase.getLocalSowingDetails(0).size());
+
     }
 
     @Override
@@ -261,7 +297,6 @@ public class HomeFragment extends Fragment implements HomeListener {
     @Override
     public void onResume() {
         super.onResume();
-        btn_uplaod_pending_sowingdetails.setText(Html.fromHtml("Pending Sowing Data : <b>" + sqlightDatabase.getLocalSowingDetails(0).size() + "</b>"));
-
+       showUploadCount();
     }
 }

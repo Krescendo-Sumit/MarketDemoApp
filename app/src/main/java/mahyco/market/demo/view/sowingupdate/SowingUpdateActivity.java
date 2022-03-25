@@ -3,6 +3,8 @@ package mahyco.market.demo.view.sowingupdate;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import mahyco.market.demo.MainActivity;
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.KeyValue;
@@ -70,9 +73,11 @@ public class SowingUpdateActivity extends AppCompatActivity {
                 try {
                     // Log.i("Parameters",model.getParamList());
                     JSONObject jsonObject = new JSONObject(model.getParamList());
-                    //   Log.i("Title :",jsonObject.getString("CharacteristicsTitle"));
+                    //Log.i("Title :",jsonObject.getString("CharacteristicsTitle"));
                     TextView txt_title = new TextView(context);
                     txt_title.setText(jsonObject.getString("CharacteristicsTitle").trim());
+                    txt_title.setTypeface(null, Typeface.BOLD);
+                    txt_title.setTextSize(14);
                     ll.addView(txt_title);
                     JSONArray jsonArray = new JSONArray(jsonObject.getString("data_mdvisit"));
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -80,15 +85,9 @@ public class SowingUpdateActivity extends AppCompatActivity {
                             KeyValue keyValue = new KeyValue();
                             keyValue.setPendingFor(pendingfor);
                             keyValue.setUniqueId(uniqueid);
-                            keyValue.setCreatedDt("2022/01/01");
-
-
+                            keyValue.setCreatedDt("2022/03/25");
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                             Log.i("InputType : ", jsonObject1.getString("inputType"));
-                            TextView txt_titles = new TextView(context);
-                            txt_titles.setText(jsonObject1.getString("title").trim());
-                            ll.addView(txt_titles);
-
                             if (jsonObject1.getString("inputType").equals("EditText")) {
                                 EditText editText = new EditText(context);
                                 editText.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
@@ -96,6 +95,9 @@ public class SowingUpdateActivity extends AppCompatActivity {
                                 keyValue.setInputype(jsonObject1.getString("inputType"));
                                 ll.addView(editText);
                             } else if (jsonObject1.getString("inputType").equals("Dropdown")) {
+                                TextView txt_titles = new TextView(context);
+                                txt_titles.setText(jsonObject1.getString("title").trim());
+                                ll.addView(txt_titles);
                                 Spinner spinner = new Spinner(context);
                                 spinner.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setSb_id(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
@@ -131,6 +133,7 @@ public class SowingUpdateActivity extends AppCompatActivity {
             }
             Button btn = new Button(context);
             btn.setText("Save Details");
+
             ll.addView(btn);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -163,14 +166,20 @@ public class SowingUpdateActivity extends AppCompatActivity {
 
                     if(sqlightDatabase.addSowingUpdateMaster(democropsowingid,uniqueid,productid,"","",pendingfor,usercode))
                     {
-                        Toast.makeText(context, "Master Data Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Master Data Added.", Toast.LENGTH_SHORT).show();
+
                     }
                     if(sqlightDatabase.addMenus(arrayList_keyvalues))
                     {
-                        Toast.makeText(context, "Menu Details added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Menu Details Added Successfully.", Toast.LENGTH_SHORT).show();
                     }
 
-                    Toast.makeText(context, "" + arrayList_keyvalues.size(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    Toast.makeText(context, "Record Saved", Toast.LENGTH_SHORT).show();
+
+                    //  Toast.makeText(context, "" + arrayList_keyvalues.size(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

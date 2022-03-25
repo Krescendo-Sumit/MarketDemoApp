@@ -14,4 +14,5 @@ public interface HomeListener {
     public void onListResponce(List result);
     public void onListResponce(PendingActionModel result);
     public void onResponce(MessageModel messageModel);
+    public void onResponceUpdate(MessageModel messageModel);
 }
