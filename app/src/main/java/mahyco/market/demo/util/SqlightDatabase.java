@@ -74,7 +74,16 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 "TalukaCode    TEXT, " +
                 "TalukaName    TEXT, " +
                 "VillageCode  TEXT, " +
-                "VillageName TEXT " +
+                "VillageName TEXT ," +
+                "FarmerName TEXT ," +
+                "MobileNo TEXT ," +
+                "WhatsAppNo TEXT, " +
+                "Latitude TEXT, " +
+                "longitude TEXT, " +
+                "ResAddr TEXT ," +
+                "NameOfHybrid TEXT, " +
+                "CheckHybrid TEXT, " +
+                "DOS TEXT" +
                 ")";
 
         db.execSQL(qry_create_tbl_action);
@@ -224,6 +233,17 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             values.put("TalukaName", actionModel.getTalukaName());
             values.put("VillageCode", actionModel.getVillageCode());
             values.put("VillageName", actionModel.getVillageName());
+
+            values.put("FarmerName", actionModel.getFarmerName());
+            values.put("MobileNo", actionModel.getMobileNo());
+            values.put("WhatsAppNo", actionModel.getWhatsAppNo());
+            values.put("Latitude", actionModel.getLatitude());
+            values.put("longitude", actionModel.getLongitude());
+            values.put("ResAddr", actionModel.getResAddr());
+            values.put("NameOfHybrid", actionModel.getNameOfHybrid());
+            values.put("CheckHybrid", actionModel.getCheckHybrid());
+            values.put("DOS", actionModel.getDOS());
+
 
             // String q = "insert into video(id,title,cid,path,content,duration,eqf,seq,pdf,karoke) values(" + id.trim() + ",'" + title + "'," + cid.trim() + ",'" + path + "','" + content + "','" + duration + "','" + eqf + "'," + seq.trim() + ",'" + pdf.trim() + "','" + karoke + "')";
             mydb.insert(TABLE_ACTION_PENDING, null, values);
@@ -447,7 +467,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         SQLiteDatabase mydb = null;
         try {
             mydb = this.getReadableDatabase();
-            String q = "update TBL_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='"+UniqueNo+"'";
+            String q = "update TBL_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
             Log.i("Query is -------> ", "" + q);
             mydb.execSQL(q);
             return true;
@@ -459,12 +479,13 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
 
     }
+
     public boolean updateSowingUpdateMasterStatus(String UniqueNo) {
 
         SQLiteDatabase mydb = null;
         try {
             mydb = this.getReadableDatabase();
-            String q = "update TBL_UPDATE_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='"+UniqueNo+"'";
+            String q = "update TBL_UPDATE_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
             Log.i("Query is -------> ", "" + q);
             mydb.execSQL(q);
             return true;
@@ -517,6 +538,17 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 actionModel.setTalukaName(c.getString(25));  //  TEXT, " +
                 actionModel.setVillageCode(c.getString(26));  //TEXT, " +
                 actionModel.setVillageName(c.getString(27));// TEXT " +
+                actionModel.setFarmerName(c.getString(28));
+                actionModel.setMobileNo(c.getString(29));
+                actionModel.setWhatsAppNo(c.getString(30));
+                actionModel.setLatitude(c.getString(31));
+                actionModel.setLongitude(c.getString(32));
+                actionModel.setResAddr(c.getString(33));
+                actionModel.setNameOfHybrid(c.getString(34));
+                actionModel.setCheckHybrid(c.getString(35));
+                actionModel.setDOS(c.getString(36));
+
+
                 arrayLists.add(actionModel);
                 i++;
             }
@@ -616,7 +648,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         ArrayList<UpdateSowingModel> arrayLists = new ArrayList<UpdateSowingModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM TBL_UPDATE_SOWING_MASTER where syncstatus="+status;
+            String q = "SELECT  * FROM TBL_UPDATE_SOWING_MASTER where syncstatus=" + status;
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 Log.i("Row", c.getString(3));
@@ -641,14 +673,14 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<KeyValue> getMenuList(int pendingfor,String uniqueno,int status) {
+    public ArrayList<KeyValue> getMenuList(int pendingfor, String uniqueno, int status) {
         SQLiteDatabase mydb = null;
         String k = "";
         KeyValue keyValue = null;
         ArrayList<KeyValue> arrayLists = new ArrayList<KeyValue>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM TBL_MENU_MASTER where syncstatus="+status;
+            String q = "SELECT  * FROM TBL_MENU_MASTER where syncstatus=" + status;
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 Log.i("Row", c.getString(3));
@@ -727,46 +759,45 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public int getSowingMasterCount(String uniquenumber)
-    {
+    public int getSowingMasterCount(String uniquenumber) {
         SQLiteDatabase mydb = null;
         String k = "";
-        int cnt=0;
+        int cnt = 0;
         SowingMasterModel sowingMasterModel = null;
         ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "select * from TBL_ACTION where UniqueSrNo='"+uniquenumber+"'";
-            Log.i("Query ",q);
+            String q = "select * from TBL_ACTION where UniqueSrNo='" + uniquenumber + "'";
+            Log.i("Query ", q);
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 cnt++;
             }
 
-            return  cnt;
+            return cnt;
         } catch (Exception e) {
             return cnt;
         } finally {
             mydb.close();
         }
     }
-    public int getSowingUpdateMasterCount(String uniquenumber)
-    {
+
+    public int getSowingUpdateMasterCount(String uniquenumber) {
         SQLiteDatabase mydb = null;
         String k = "";
-        int cnt=0;
+        int cnt = 0;
         SowingMasterModel sowingMasterModel = null;
         ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "select * from TBL_UPDATE_SOWING_MASTER where UniqueSrNo='"+uniquenumber+"'";
-            Log.i("Query ",q);
+            String q = "select * from TBL_UPDATE_SOWING_MASTER where UniqueSrNo='" + uniquenumber + "'";
+            Log.i("Query ", q);
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 cnt++;
             }
 
-            return  cnt;
+            return cnt;
         } catch (Exception e) {
             return cnt;
         } finally {

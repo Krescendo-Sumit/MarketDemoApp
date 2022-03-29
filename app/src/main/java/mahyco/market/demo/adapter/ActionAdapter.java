@@ -99,13 +99,52 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.tvTotalMDSeedAvlInGram.setText(actionModel.getTotalMDSeedAvlInGram());
             holder.tvNoOfKits.setText(actionModel.getNoOfKits());
             holder.tvDistrictId.setText(actionModel.getDistrictId());
-            holder.tvTalukaId.setText(actionModel.getTalukaId());
+            holder.tvTalukaId.setText(actionModel.getTalukaName());
             holder.tvAssignedTo.setText(actionModel.getAssignedTo());
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
             holder.tvProductId.setText(actionModel.getProductId());
             holder.tvVisitStageId.setText(actionModel.getVisitStageId());
             holder.tvVisitStage.setText(actionModel.getVisitStage());
             holder.tvDemoCropSowingId.setText(actionModel.getDemoCropSowingId());
+
+            if(Integer.parseInt(actionModel.getPendingFor().trim())>1)
+            {
+
+                holder.ll.setVisibility(View.VISIBLE);
+                holder.tvFarmerName.setVisibility(View.VISIBLE);
+                holder.tvMobileNo.setVisibility(View.VISIBLE);
+                holder.tvWhatsAppNo.setVisibility(View.VISIBLE);
+                holder.tvlongitude.setVisibility(View.VISIBLE);
+                holder.tvResAddr.setVisibility(View.VISIBLE);
+                holder.tvNameOfHybrid.setVisibility(View.VISIBLE);
+                holder.tvCheckHybrid.setVisibility(View.VISIBLE);
+                holder.tvDOS.setVisibility(View.VISIBLE);
+
+                holder.tvFarmerName.setText(actionModel.getFarmerName());
+                holder.tvMobileNo.setText(actionModel.getMobileNo());
+                holder.tvWhatsAppNo.setText(actionModel.getWhatsAppNo());
+                holder.tvlongitude.setText(actionModel.getLatitude()+","+actionModel.getLongitude());
+                holder.tvResAddr.setText(actionModel.getResAddr());
+                holder.tvNameOfHybrid.setText(actionModel.getNameOfHybrid());
+                holder.tvCheckHybrid.setText(actionModel.getCheckHybrid());
+                holder.tvDOS.setText(actionModel.getDOS());
+
+            }else
+            {
+                holder.tvFarmerName.setVisibility(View.GONE);
+                holder.ll.setVisibility(View.GONE);
+                holder.tvMobileNo.setVisibility(View.GONE);
+                holder.tvWhatsAppNo.setVisibility(View.GONE);
+                holder.tvlongitude.setVisibility(View.GONE);
+                holder.tvResAddr.setVisibility(View.GONE);
+                holder.tvNameOfHybrid.setVisibility(View.GONE);
+                holder.tvCheckHybrid.setVisibility(View.GONE);
+                holder.tvDOS.setVisibility(View.GONE);
+            }
+
+
+
+
             int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
             if (k > 0) {
                 holder.btnDownloadPA.setText("Already Downloaded");
@@ -177,6 +216,16 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                 tvVisitStage,
                 tvDemoCropSowingId;
 
+        TextView tvFarmerName;
+        TextView tvMobileNo;
+        TextView tvWhatsAppNo;
+        TextView tvLatitude;
+        TextView tvlongitude;
+        TextView tvResAddr;
+        TextView tvNameOfHybrid;
+        TextView tvCheckHybrid;
+        TextView tvDOS;
+        LinearLayout ll;
 
         Button btnDownloadPA;
 
@@ -203,7 +252,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             tvVisitStageId = (TextView) itemView.findViewById(R.id.tvVisitStageId);
             tvVisitStage = (TextView) itemView.findViewById(R.id.tvVisitStage);
             tvDemoCropSowingId = (TextView) itemView.findViewById(R.id.tvDemoCropSowingId);
-
+            tvFarmerName= (TextView) itemView.findViewById(R.id.tv_farmername);
+            tvMobileNo= (TextView) itemView.findViewById(R.id.tv_mobile);
+            tvWhatsAppNo= (TextView) itemView.findViewById(R.id.tvWhatsappno);
+            tvlongitude= (TextView) itemView.findViewById(R.id.tv_coordinates);
+            tvResAddr= (TextView) itemView.findViewById(R.id.tvaddress);
+            tvNameOfHybrid= (TextView) itemView.findViewById(R.id.tvdemocrop);
+            tvCheckHybrid= (TextView) itemView.findViewById(R.id.tvchkcrop);
+            tvDOS= (TextView) itemView.findViewById(R.id.tvdos);
+            ll= (LinearLayout) itemView.findViewById(R.id.ll);
 
             btnDownloadPA = (Button) itemView.findViewById(R.id.btnDownloadPA);
         }
