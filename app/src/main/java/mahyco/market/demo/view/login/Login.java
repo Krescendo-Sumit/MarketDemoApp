@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity implements LoginAPIListener {
                 ValidateLogin(str_usercode, str_password);
             }
         });
-        Toast.makeText(context, ""+Preferences.get(context,Preferences.USER_ID), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context, ""+Preferences.get(context,Preferences.USER_ID), Toast.LENGTH_SHORT).show();
       if( Preferences.get(context,Preferences.USER_ID)!=null&&!Preferences.get(context,Preferences.USER_ID).trim().equals(""))
         {
 

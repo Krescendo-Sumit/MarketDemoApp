@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.enums.EPickType;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,10 +41,12 @@ import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
 import mahyco.market.demo.model.SowingMasterModel;
 import mahyco.market.demo.model.VillageModel;
+import mahyco.market.demo.util.MyApplicationUtil;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
 
-public class AddNewSowingDetails extends AppCompatActivity {
+
+public class AddNewSowingDetails extends AppCompatActivity implements IPickResult {
     String uniqueSrId;
     Context context;
     ActionModel actionModel;
@@ -56,7 +64,8 @@ public class AddNewSowingDetails extends AppCompatActivity {
             edResAddr,
 
     edDateOfSowing;
-    TextView edGeoTagging;
+    TextView edGeoTagging, txt_chooseimage;
+    ImageView img_famerimage;
     Button btnSowingSubmit;
     SearchableSpinner sp_village_code;
     ArrayList<VillageModel> villageModelsList;
@@ -80,7 +89,7 @@ public class AddNewSowingDetails extends AppCompatActivity {
     int mYear, mMonth, mDay;
     SowingMasterModel sowingMasterModel;
     private FusedLocationProviderClient fusedLocationClient;
-
+String file_path,base64_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,13 +101,12 @@ public class AddNewSowingDetails extends AppCompatActivity {
     public void init() {
         try {
 
-
             context = AddNewSowingDetails.this;
             sqlightDatabase = new SqlightDatabase(context);
             sowingMasterModel = new SowingMasterModel();
             uniqueSrId = Preferences.get(context, Preferences.SELECTED_UNIQSRID);
+            setTitle("" + uniqueSrId);
             // Toast.makeText(context, ""+uniqueSrId, Toast.LENGTH_SHORT).show();
-
             edUno = findViewById(R.id.edUno);
             edState = findViewById(R.id.edState);
             edDistrict = findViewById(R.id.edDistrict);
@@ -114,8 +122,15 @@ public class AddNewSowingDetails extends AppCompatActivity {
             edGeoTagging = findViewById(R.id.edGeoTagging);
             edResAddr = findViewById(R.id.edResAddress);
             btnSowingSubmit = findViewById(R.id.btnSowingSubmit);
+            txt_chooseimage = findViewById(R.id.txt_choose_image);
+            img_famerimage = findViewById(R.id.img_farmer);
+            txt_chooseimage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(AddNewSowingDetails.this);
+                }
+            });
             edDateOfSowing.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
@@ -124,7 +139,6 @@ public class AddNewSowingDetails extends AppCompatActivity {
                     mYear = mcurrentDate.get(Calendar.YEAR);
                     mMonth = mcurrentDate.get(Calendar.MONTH);
                     mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
                     final DatePickerDialog mDatePicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                         public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                             // TODO Auto-generated method stub
@@ -190,6 +204,10 @@ public class AddNewSowingDetails extends AppCompatActivity {
                         sowingMasterModel.setUserCode(UserCode);// TEXT," +
                         sowingMasterModel.setSyncStatus(SyncStatus);// INTERGER," +
                         sowingMasterModel.setDownlaodStatus(DownlaodStatus);// INTEGER"
+                        sowingMasterModel.setImageName("");// INTEGER"
+                      //  sowingMasterModel.setImageinByte(base64_image);// INTEGER"
+                        sowingMasterModel.setImageinByte("");// INTEGER"
+
 
                         if (sqlightDatabase.addSowingMaster(sowingMasterModel)) {
                             Intent intent = new Intent(context, MainActivity.class);
@@ -225,9 +243,9 @@ public class AddNewSowingDetails extends AppCompatActivity {
                     if (location != null) {
                         // Logic to handle location object
 
-                         Latitude=""+location.getLatitude();
-                         longitude=""+location.getLongitude();
-                       // Toast.makeText(context, "Location Latitude : " + location.getLatitude() + " Longitude :" + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                        Latitude = "" + location.getLatitude();
+                        longitude = "" + location.getLongitude();
+                        // Toast.makeText(context, "Location Latitude : " + location.getLatitude() + " Longitude :" + location.getLongitude(), Toast.LENGTH_SHORT).show();
                         edGeoTagging.setText(location.getLatitude() + "," + location.getLongitude());
                     }
                 }
@@ -237,6 +255,7 @@ public class AddNewSowingDetails extends AppCompatActivity {
             Toast.makeText(context, "Error in AddNewSowingDetails" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
     String getAddress(double latitude, double longitude) {
         try {
             Geocoder geocoder;
@@ -256,6 +275,7 @@ public class AddNewSowingDetails extends AppCompatActivity {
             return "";
         }
     }
+
     public boolean validateUIElement() {
         try {
 
@@ -267,8 +287,8 @@ public class AddNewSowingDetails extends AppCompatActivity {
             CheckHybrid = edCheckHybridName.getText().toString().trim();
             CompanyOfCheckHybrid = edCheckHybridCompany.getText().toString().trim();
             DOS = edDateOfSowing.getText().toString().trim();
-          //  Latitude = "24.377828";
-         //   longitude = "75.229930";
+            //  Latitude = "24.377828";
+            //   longitude = "75.229930";
             ResAddr = edResAddr.getText().toString().trim();
             ProductId = Integer.parseInt(actionModel.getProductId().toString().trim());
             PendingFor = Integer.parseInt(actionModel.getPendingFor().toString().trim());
@@ -279,6 +299,17 @@ public class AddNewSowingDetails extends AppCompatActivity {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public void onPickResult(PickResult r) {
+        try {
+            img_famerimage.setImageBitmap(r.getBitmap());
+            file_path=r.getPath();
+            base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());
+        } catch (Exception e) {
+
         }
     }
 }

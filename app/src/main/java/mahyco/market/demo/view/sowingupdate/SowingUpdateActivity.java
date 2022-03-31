@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +20,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.enums.EPickType;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,10 +38,12 @@ import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.KeyValue;
 import mahyco.market.demo.model.LocalCharactersticsModel;
 import mahyco.market.demo.model.parametermodels.ParamterModel;
+import mahyco.market.demo.util.MyApplicationUtil;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
+import mahyco.market.demo.view.sowingaction.AddNewSowingDetails;
 
-public class SowingUpdateActivity extends AppCompatActivity {
+public class SowingUpdateActivity extends AppCompatActivity  implements IPickResult {
 
     Context context;
     JsonObject jsonObject;
@@ -45,13 +53,22 @@ public class SowingUpdateActivity extends AppCompatActivity {
     ArrayList<LocalCharactersticsModel> arrayList;
     LinearLayout ll;
     ArrayList<KeyValue> arrayList_keyvalues;
-
+    TextView  txt_chooseimage;
+    ImageView img_famerimage;
+    String file_path,base64_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sowing_update);
         context = SowingUpdateActivity.this;
-
+        txt_chooseimage = findViewById(R.id.txt_choose_image);
+        img_famerimage = findViewById(R.id.img_farmer);
+        txt_chooseimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
+            }
+        });
         sqlightDatabase = new SqlightDatabase(context);
         arrayList_keyvalues = new ArrayList();
         ll = (LinearLayout) findViewById(R.id.ll);
@@ -59,6 +76,7 @@ public class SowingUpdateActivity extends AppCompatActivity {
 
             pendingfor = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PENDINGFOR).toString().trim());
             uniqueid = Preferences.get(context, Preferences.SELECTED_UNIQSRID).toString().trim();
+            setTitle(""+uniqueid);
             usercode = Preferences.get(context, Preferences.USER_ID).toString().trim();
             productid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PRODUCTCODE).toString().trim());
             democropsowingid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_DEMOCROPSOWINGID).toString().trim());
@@ -79,6 +97,14 @@ public class SowingUpdateActivity extends AppCompatActivity {
                     txt_title.setTypeface(null, Typeface.BOLD);
                     txt_title.setTextSize(14);
                     ll.addView(txt_title);
+                    LinearLayout linearLayout=new LinearLayout(context);
+                    linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            1.0f
+                    );
+
                     JSONArray jsonArray = new JSONArray(jsonObject.getString("data_mdvisit"));
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
@@ -90,6 +116,7 @@ public class SowingUpdateActivity extends AppCompatActivity {
                             Log.i("InputType : ", jsonObject1.getString("inputType"));
                             if (jsonObject1.getString("inputType").equals("EditText")) {
                                 EditText editText = new EditText(context);
+
                                 editText.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setSb_id(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setInputype(jsonObject1.getString("inputType"));
@@ -164,7 +191,7 @@ public class SowingUpdateActivity extends AppCompatActivity {
                         }
                     }
 
-                    if(sqlightDatabase.addSowingUpdateMaster(democropsowingid,uniqueid,productid,"","",pendingfor,usercode))
+                    if(sqlightDatabase.addSowingUpdateMaster(democropsowingid,uniqueid,productid,"",base64_image,pendingfor,usercode))
                     {
                         Toast.makeText(context, "Master Data Added.", Toast.LENGTH_SHORT).show();
 
@@ -187,4 +214,14 @@ public class SowingUpdateActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPickResult(PickResult r) {
+        try {
+            img_famerimage.setImageBitmap(r.getBitmap());
+            file_path=r.getPath();
+            base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());
+        } catch (Exception e) {
+
+        }
+    }
 }

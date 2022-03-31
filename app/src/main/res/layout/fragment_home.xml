@@ -8,6 +8,17 @@
     <!-- TODO: Update blank fragment layout -->
 
 
+    <TextView
+        android:id="@+id/txt_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:fontFamily="@font/comforta"
+        android:padding="10dp"
+        android:text="Welcome : SumitSuradkar (UK000202)"
+        android:textColor="#D84315"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,24 +27,39 @@
         android:padding="50dp">
 
 
-        <Button
-            android:id="@+id/btn_takeAction"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/comforta"
-            android:text="Add Sowing Details" />
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_takeAction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/comforta"
+                android:text="New \n Sowing" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   " />
+
+            <Button
+                android:id="@+id/btn_takeActionUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/comforta"
+                android:text="Update\nSowing" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btn_getpendingaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/comforta"
-            android:text="Download Pending Action" />
 
         <TextView
             android:id="@+id/textView5"
@@ -102,9 +128,23 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:id="@+id/btn_getpendingaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/comforta"
+            android:padding="10dp"
+            android:text="Download Pending Action" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
             android:id="@+id/btn_clear_local_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:text="Clear Data" />
     </LinearLayout>
 </RelativeLayout>

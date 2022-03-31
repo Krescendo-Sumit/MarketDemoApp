@@ -40,7 +40,8 @@ public class PendingActionList extends AppCompatActivity  {
         rc_pendingaction=findViewById(R.id.rc_pendingaction);
         mManager = new LinearLayoutManager(context);
         rc_pendingaction.setLayoutManager(mManager);
-        laodLocalAction(sqlightDatabase.getLocalActionsList());
+        int pendingfor=Integer.parseInt(Preferences.get(context,Preferences.PENDINGFOR_LOCALLIST));
+        laodLocalAction(sqlightDatabase.getLocalActionsList(pendingfor));
 
     }
     public void laodLocalAction(List<ActionModel> lst_actionModels)

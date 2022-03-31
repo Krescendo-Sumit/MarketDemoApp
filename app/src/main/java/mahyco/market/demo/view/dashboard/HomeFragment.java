@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -56,8 +57,8 @@ public class HomeFragment extends Fragment implements HomeListener {
     private String mParam1;
     private String mParam2;
     Button btn_getPendingActions, btn_takeAction, btn_uplaod_pending_sowingdetails, btn_clear_local_data;
-    Button btn_uplaod_update_sowingdetails;
-
+    Button btn_uplaod_update_sowingdetails,btn_takeActionUpdate;
+    TextView txt_user;
     public HomeFragment() {
         // Required empty public constructor
 
@@ -104,6 +105,9 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_uplaod_pending_sowingdetails = baseView.findViewById(R.id.btn_uplaod_pending_sowingdetails);
         btn_clear_local_data = baseView.findViewById(R.id.btn_clear_local_data);
         btn_uplaod_update_sowingdetails = baseView.findViewById(R.id.btn_uplaod_update_sowingdetails);
+        btn_takeActionUpdate = baseView.findViewById(R.id.btn_takeActionUpdate);
+        txt_user = baseView.findViewById(R.id.txt_user);
+        txt_user.setText("Welcome : "+Preferences.get(context,Preferences.USER_NAME)+" ( "+Preferences.get(context,Preferences.USER_ID)+" )");
         showUploadCount();
         btn_getPendingActions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +130,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                 jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
                 jsonObject.addProperty("FilterOption", "UserCode");
                 homeAPI.getPendingActions(jsonObject);*/
+                Preferences.save(context,Preferences.PENDINGFOR_LOCALLIST,"1");
                 Intent intent = new Intent(context, PendingActionList.class);
                 startActivity(intent);
             }
@@ -157,6 +162,8 @@ public class HomeFragment extends Fragment implements HomeListener {
                         json.addProperty("PendingFor", m.getPendingFor());
                         json.addProperty("VillageName", m.getVillageName());
                         json.addProperty("UserCode", m.getUserCode());
+                        json.addProperty("ImageName", m.getImageName());//
+                        json.addProperty("ImageinByte", m.getImageinByte());
                         jsonArray.add(json);
                     }
                     jsonObject.add("cropSowingModel", jsonArray);
@@ -216,6 +223,14 @@ public class HomeFragment extends Fragment implements HomeListener {
                 jsonObject.add("cropAndCharSowingModel", jsonArray);
                 Log.i("Json Array is ", jsonObject.toString());
                  homeAPI.uploadUdatedSowingDetails(jsonObject);
+            }
+        });
+        btn_takeActionUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Preferences.save(context,Preferences.PENDINGFOR_LOCALLIST,"2");
+                Intent intent = new Intent(context, PendingActionList.class);
+                startActivity(intent);
             }
         });
 

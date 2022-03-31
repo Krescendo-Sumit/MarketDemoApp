@@ -102,23 +102,25 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         Log.i("Query ", "TBL_VILLAGE SUCCESS");
 
         String qry_create_tbl_sowing_master = "CREATE TABLE IF NOT EXISTS " + TBL_SOWING_MASTER + " (" +
-                "      UniqueSrNo TEXT," +
-                "      FarmerName  TEXT," +
-                "      MobileNo TEXT," +
-                "      WhatsAppNo TEXT," +
-                "      NameOfHybrid TEXT," +
-                "      CheckHybrid TEXT," +
-                "      CompanyOfCheckHybrid TEXT," +
-                "      DOS TEXT," +
-                "      Latitude TEXT," +
-                "      longitude TEXT," +
-                "      ResAddr TEXT," +
-                "      ProductId INTEGER," +
-                "      PendingFor INTEGER," +
-                "      VillageName TEXT," +
-                "      UserCode TEXT," +
-                "      SyncStatus INTERGER," +
-                "      DownlaodStatus INTEGER" +
+                "UniqueSrNo TEXT," +
+                "FarmerName  TEXT," +
+                "MobileNo TEXT," +
+                "WhatsAppNo TEXT," +
+                "NameOfHybrid TEXT," +
+                "CheckHybrid TEXT," +
+                "CompanyOfCheckHybrid TEXT," +
+                "DOS TEXT," +
+                "Latitude TEXT," +
+                "longitude TEXT," +
+                "ResAddr TEXT," +
+                "ProductId INTEGER," +
+                "PendingFor INTEGER," +
+                "VillageName TEXT," +
+                "UserCode TEXT," +
+                "SyncStatus INTERGER," +
+                "DownlaodStatus INTEGER," +
+                "ImageName TEXT," +
+                "ImageinByte TEXT" +
                 ")";
         db.execSQL(qry_create_tbl_sowing_master);
 
@@ -443,6 +445,8 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             values.put("PendingFor", sowingMasterModel.getPendingFor());// INTEGER," +
             values.put("VillageName", sowingMasterModel.getVillageName());// TEXT," +
             values.put("UserCode", sowingMasterModel.getUserCode());// TEXT," +
+            values.put("ImageName", sowingMasterModel.getImageName());// TEXT," +
+            values.put("ImageinByte", sowingMasterModel.getImageinByte());// TEXT," +
             values.put("SyncStatus", sowingMasterModel.getSyncStatus());// INTERGER," +
             values.put("DownlaodStatus", sowingMasterModel.getDownlaodStatus());// INTEGER" +
 
@@ -498,7 +502,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<ActionModel> getLocalActionsList() {
+    public ArrayList<ActionModel> getLocalActionsList(int pendingfor) {
         SQLiteDatabase mydb = null;
         String k = "";
         ActionModel actionModel = null;
@@ -507,7 +511,18 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         try {
             mydb = this.getReadableDatabase();
             String q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " order by UniqueSrNo";
-            Cursor c = mydb.rawQuery(q, null);
+
+            if(pendingfor==1)
+            {
+                q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " where PendingFor=1  order by UniqueSrNo";
+
+            }else if(pendingfor>1)
+            {
+                q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " where PendingFor>1  order by UniqueSrNo";
+
+            }
+
+           Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 actionModel = new ActionModel();
                 actionModel.setMDDispatchSegmetnId(c.getString(0));    // INTEGER, " +
@@ -733,6 +748,9 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 sowingMasterModel.setUserCode(c.getString(14));//", sowingMasterModel.getUserCode());// TEXT," +
                 sowingMasterModel.setSyncStatus(c.getInt(15));//", sowingMasterModel.getSyncStatus());// INTERGER," +
                 sowingMasterModel.setDownlaodStatus(c.getInt(16));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageName(c.getString(17));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageinByte(c.getString(18));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+
                 arrayLists.add(sowingMasterModel);
             }
             return arrayLists;

@@ -1138,7 +1138,7 @@
                     android:fontFamily="@font/comforta"
                     android:padding="2dp"
                     android:text="@string/download"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/white"
                     android:textSize="10sp"
                     android:textStyle="normal" />
 

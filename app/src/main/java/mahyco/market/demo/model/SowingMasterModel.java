@@ -156,4 +156,23 @@ public class SowingMasterModel {
     int SyncStatus;
     int DownlaodStatus;
 
+    public String getImageName() {
+        return ImageName;
+    }
+
+    public void setImageName(String imageName) {
+        ImageName = imageName;
+    }
+
+    public String getImageinByte() {
+        return ImageinByte;
+    }
+
+    public void setImageinByte(String imageinByte) {
+        ImageinByte = imageinByte;
+    }
+
+    String ImageName;
+    String ImageinByte;
+
 }
