@@ -61,10 +61,10 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             edMDHybridName,
             edCheckHybridName,
             edCheckHybridCompany,
-            edResAddr,
+            edResAddr,edDateOfSowing;
 
-    edDateOfSowing;
     TextView edGeoTagging, txt_chooseimage;
+
     ImageView img_famerimage;
     Button btnSowingSubmit;
     SearchableSpinner sp_village_code;

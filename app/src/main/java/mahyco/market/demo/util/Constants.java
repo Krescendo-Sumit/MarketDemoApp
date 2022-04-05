@@ -8,6 +8,8 @@ public class Constants {
     public static final String UPLOAD_SOWING_DETAILS = "api/cropSowing/demoCropSowingCreate";
     public static final String GET_PRODUCT_CHARACTRISTICS = "api/appCharacteristicMenu/get";
     public static final String UPLOAD_SOWING_UPDATE_DETAILS = "api/cropSowing/demoCropSowingUpdate";
+    public static final String GET_REPORTMASTER ="api/mobileAppReport/getSowingReport" ;
+    public static final String GET_REPORTDETAILSMASTER = "api/mobileAppReport/getSowingReportDetails" ;
     static final String CHECK_LOGIN="api/customToken/customToken";
 
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Vector;
 
 import mahyco.market.demo.model.ActionModel;
+import mahyco.market.demo.model.CharatristicsMenuReportDetailsModel;
 import mahyco.market.demo.model.KeyValue;
 import mahyco.market.demo.model.LocalCharactersticsModel;
 import mahyco.market.demo.model.SowingMasterModel;
@@ -28,7 +29,7 @@ import mahyco.market.demo.model.parametermodels.ParamterModel;
 public class SqlightDatabase extends SQLiteOpenHelper {
 
     final static String DBName = "db_marketdemo";
-    final static int version = 5;
+    final static int version = 6;
     private static final String TBL_SOWING_MASTER = "TBL_SOWING_MASTER";
     private static final String TBL_CHARACTRISTICS = "TBL_CHARACTRISTICS";
     long count = 0;
@@ -159,6 +160,19 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 ")";
         db.execSQL(qry_update_sowing_master);
         Log.i("Query ", "qry_update_sowing_master SUCCESS");
+        String qry_charactristics_temp = "Create table  IF NOT EXISTS   tbl_temp_sowingcharactristics" +
+                "(DemoCropCharId integer," +
+                "MDDispatchSegmetnId integer," +
+                "DemoCropSowingId integer," +
+                "ProductId integer," +
+                "VisitStageId integer," +
+                "MenuId integer," +
+                "UniqueSrNo text," +
+                "MenuTitle text," +
+                "KeyValue text," +
+                "Characteristics text)";
+        db.execSQL(qry_charactristics_temp);
+        Log.i("Query ", "tbl_temp_sowingcharactristics SUCCESS");
 
     }
 
@@ -200,6 +214,25 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
 
     }
+
+    public boolean deleteTempChractristics( ) {
+
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "delete from tbl_temp_sowingcharactristics";
+            mydb.execSQL(q);
+
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is Clear List", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
+
 
     public boolean addPendingAction(ActionModel actionModel) {
 
@@ -323,6 +356,41 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
+    public boolean addTempChractristicsDetails(List<CharatristicsMenuReportDetailsModel> actionModel) {
+
+        SQLiteDatabase mydb = null;
+        try {
+            mydb = this.getReadableDatabase();
+
+            for (CharatristicsMenuReportDetailsModel v : actionModel) {
+                ContentValues values = new ContentValues();
+
+                values.put("DemoCropCharId", v.getDemoCropCharId());// integer,
+                values.put("MDDispatchSegmetnId", v.getMDDispatchSegmetnId());// integer,
+                values.put("DemoCropSowingId", v.getDemoCropSowingId());// integer,
+                values.put("ProductId", v.getProductId());// integer,
+                values.put("VisitStageId", v.getVisitStageId());// integer,
+                values.put("MenuId", v.getMenuId());// integer,
+                values.put("UniqueSrNo", v.getUniqueSrNo());// text,
+                values.put("MenuTitle", v.getMenuTitle());// text,
+                values.put("KeyValue", v.getKeyValue());// text,
+                values.put("Characteristics", v.getCharacteristics());//
+
+                mydb.insert("tbl_temp_sowingcharactristics", null, values);
+
+                Log.i("Query is -------> ", "");
+            }
+            mydb.close();
+            return true;
+        } catch (Exception e) {
+            Log.i("Error is temp", "" + e.getMessage());
+            return false;
+        } finally {
+            mydb.close();
+        }
+
+    }
+
 
     public boolean addMenus(List<KeyValue> actionModel) {
 
@@ -424,6 +492,44 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     }
 
 
+    public ArrayList<CharatristicsMenuReportDetailsModel> getTempChracteristics(int segmentid) {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        CharatristicsMenuReportDetailsModel localCharactersticsModel = null;
+        ArrayList<CharatristicsMenuReportDetailsModel> arrayLists = new ArrayList<CharatristicsMenuReportDetailsModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "select * from tbl_temp_sowingcharactristics where MDDispatchSegmetnId="+segmentid;
+            Log.i("Query ", q);
+            Cursor c = mydb.rawQuery(q, null);
+
+            while (c.moveToNext()) {
+                Log.i("Row", c.getString(3));
+                localCharactersticsModel = new CharatristicsMenuReportDetailsModel();
+
+                localCharactersticsModel.setDemoCropCharId(c.getInt(0));//", v.getDemoCropCharId());// integer,
+                localCharactersticsModel.setMDDispatchSegmetnId(c.getInt(1));//", v.getMDDispatchSegmetnId());// integer,
+                localCharactersticsModel.setDemoCropSowingId(c.getInt(2));//", v.getDemoCropSowingId());// integer,
+                localCharactersticsModel.setProductId(c.getInt(3));//", v.getProductId());// integer,
+                localCharactersticsModel.setVisitStageId(c.getInt(4));//", v.getVisitStageId());// integer,
+                localCharactersticsModel.setMenuId(c.getInt(5));//", v.getMenuId());// integer,
+                localCharactersticsModel.setUniqueSrNo(c.getString(6));//", v.getUniqueSrNo());// text,
+                localCharactersticsModel.setMenuTitle(c.getString(7));//", v.getMenuTitle());// text,
+                localCharactersticsModel.setKeyValue(c.getString(8));//", v.getKeyValue());// text,
+                localCharactersticsModel.setCharacteristics(c.getString(9));//", v.getCharacteristics());//
+
+                arrayLists.add(localCharactersticsModel);
+            }
+            return arrayLists;
+        } catch (Exception e) {
+            Log.i("Error getdata", e.getMessage());
+            return null;
+        } finally {
+            mydb.close();
+        }
+    }
+
+
     public boolean addSowingMaster(SowingMasterModel sowingMasterModel) {
 
         SQLiteDatabase mydb = null;
@@ -512,17 +618,15 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             mydb = this.getReadableDatabase();
             String q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " order by UniqueSrNo";
 
-            if(pendingfor==1)
-            {
+            if (pendingfor == 1) {
                 q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " where PendingFor=1  order by UniqueSrNo";
 
-            }else if(pendingfor>1)
-            {
+            } else if (pendingfor > 1) {
                 q = "SELECT  * FROM " + TABLE_ACTION_PENDING + " where PendingFor>1  order by UniqueSrNo";
 
             }
 
-           Cursor c = mydb.rawQuery(q, null);
+            Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 actionModel = new ActionModel();
                 actionModel.setMDDispatchSegmetnId(c.getString(0));    // INTEGER, " +

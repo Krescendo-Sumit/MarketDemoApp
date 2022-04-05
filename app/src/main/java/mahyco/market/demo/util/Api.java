@@ -9,6 +9,8 @@ import java.util.List;
 import mahyco.market.demo.model.CharactristicsModel;
 import mahyco.market.demo.model.MessageModel;
 import mahyco.market.demo.model.PendingActionModel;
+import mahyco.market.demo.model.ReportDetailsModel;
+import mahyco.market.demo.model.ReportMasterModel;
 import mahyco.market.demo.model.VillageMasterModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -37,6 +39,12 @@ public interface Api {
 
     @POST(Constants.UPLOAD_SOWING_UPDATE_DETAILS)
     Call<MessageModel> uploadUpdateSowingDetails(@Body JsonObject jsonObject);
+
+    @POST(Constants.GET_REPORTMASTER)
+    Call<List<ReportMasterModel>> getReportMaster(@Body JsonObject jsonObject);
+
+    @POST(Constants.GET_REPORTDETAILSMASTER)
+    Call<ReportDetailsModel> getReportDetailsMaster(@Body JsonObject jsonObject);
 
 /*
     @POST(Constants.COURSE_URL)

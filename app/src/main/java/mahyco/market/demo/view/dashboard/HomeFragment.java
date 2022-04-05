@@ -35,6 +35,7 @@ import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
 import mahyco.market.demo.view.actionlist.PendingActionList;
 import mahyco.market.demo.view.pendingaction.PendingActionActivity;
+import mahyco.market.demo.view.reports.ReportMaster;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     private String mParam1;
     private String mParam2;
     Button btn_getPendingActions, btn_takeAction, btn_uplaod_pending_sowingdetails, btn_clear_local_data;
-    Button btn_uplaod_update_sowingdetails,btn_takeActionUpdate;
+    Button btn_uplaod_update_sowingdetails,btn_takeActionUpdate,btn_view_report;
     TextView txt_user;
     public HomeFragment() {
         // Required empty public constructor
@@ -106,6 +107,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_clear_local_data = baseView.findViewById(R.id.btn_clear_local_data);
         btn_uplaod_update_sowingdetails = baseView.findViewById(R.id.btn_uplaod_update_sowingdetails);
         btn_takeActionUpdate = baseView.findViewById(R.id.btn_takeActionUpdate);
+        btn_view_report = baseView.findViewById(R.id.btn_view_report);
         txt_user = baseView.findViewById(R.id.txt_user);
         txt_user.setText("Welcome : "+Preferences.get(context,Preferences.USER_NAME)+" ( "+Preferences.get(context,Preferences.USER_ID)+" )");
         showUploadCount();
@@ -121,7 +123,18 @@ public class HomeFragment extends Fragment implements HomeListener {
                 startActivity(intent);
             }
         });
-
+        btn_view_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //   Toast.makeText(context, "Hii", Toast.LENGTH_SHORT).show();
+            /*    JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
+                jsonObject.addProperty("FilterOption", "UserCode");
+                homeAPI.getPendingActions(jsonObject);*/
+                Intent intent = new Intent(context, ReportMaster.class);
+                startActivity(intent);
+            }
+        });
         btn_takeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
