@@ -98,7 +98,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.tvState.setText(actionModel.getState());
             holder.tvTotalMDSeedAvlInGram.setText(actionModel.getTotalMDSeedAvlInGram());
             holder.tvNoOfKits.setText(actionModel.getNoOfKits());
-            holder.tvDistrictId.setText(actionModel.getDistrictId());
+            holder.tvDistrictId.setText(actionModel.getDistrictName());
             holder.tvTalukaId.setText(actionModel.getTalukaName());
             holder.tvAssignedTo.setText(actionModel.getAssignedTo());
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
@@ -154,10 +154,15 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                 @Override
                 public void onClick(View view) {
                   //  Toast.makeText(context, "" + sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()), Toast.LENGTH_SHORT).show();
-
+                    int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
                     if (k > 0) {
+                        holder.btnDownloadPA.setText("Already Downloaded");
+                    }
+                    if (k > 0) {
+
                         Toast.makeText(context, "Already Exist!", Toast.LENGTH_SHORT).show();
                     } else {
+                        Preferences.save(context, Preferences.SELECTED_UNIQSRID,actionModel.getUniqueSrNo());
                         int pendingfor = Integer.parseInt(actionModel.getPendingFor().trim());
                         if (pendingfor > 1) {
                             if (sqlightDatabase.getChracteristics(actionModel.getProductId(), actionModel.getUniqueSrNo()).size() > 0) {
@@ -179,11 +184,13 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                             }
 
                         }
+
                         if (sqlightDatabase.addPendingAction(actionModel)) {
                             Toast.makeText(context, "Data Saved Locally", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 }
             });

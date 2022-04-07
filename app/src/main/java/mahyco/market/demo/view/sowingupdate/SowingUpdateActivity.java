@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,8 +30,12 @@ import com.vansuita.pickimage.listeners.IPickResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mahyco.market.demo.MainActivity;
 import mahyco.market.demo.R;
@@ -60,6 +65,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sowing_update);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = SowingUpdateActivity.this;
         txt_chooseimage = findViewById(R.id.txt_choose_image);
         img_famerimage = findViewById(R.id.img_farmer);
@@ -76,7 +82,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
 
             pendingfor = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PENDINGFOR).toString().trim());
             uniqueid = Preferences.get(context, Preferences.SELECTED_UNIQSRID).toString().trim();
-            setTitle(""+uniqueid);
+            setTitle("Updated Sowing -"+uniqueid);
             usercode = Preferences.get(context, Preferences.USER_ID).toString().trim();
             productid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PRODUCTCODE).toString().trim());
             democropsowingid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_DEMOCROPSOWINGID).toString().trim());
@@ -84,7 +90,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
             jsonObject.addProperty("ProductId", productid);
             jsonObject.addProperty("VisitStageId", pendingfor);
             //   sowingUpdateAPI.getChartristics(jsonObject);
-            arrayList = sqlightDatabase.getChracteristics("" + productid, Preferences.get(context, Preferences.SELECTED_UNIQSRID));
+            arrayList = sqlightDatabase.getChracteristics("" + productid, uniqueid);
             Toast.makeText(context, "Size " + arrayList.size(), Toast.LENGTH_SHORT).show();
 
             for (LocalCharactersticsModel model : arrayList) {
@@ -108,24 +114,39 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
                     JSONArray jsonArray = new JSONArray(jsonObject.getString("data_mdvisit"));
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
+                            LinearLayout linearLayout1=new LinearLayout(context);
+                            linearLayout1.setOrientation(LinearLayout.VERTICAL);
+                            LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.MATCH_PARENT
+
+                            );
+
                             KeyValue keyValue = new KeyValue();
                             keyValue.setPendingFor(pendingfor);
                             keyValue.setUniqueId(uniqueid);
-                            keyValue.setCreatedDt("2022/03/25");
+                            Date c = Calendar.getInstance().getTime();
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+                            String formattedDate = df.format(c);
+                            keyValue.setCreatedDt(""+formattedDate);
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                             Log.i("InputType : ", jsonObject1.getString("inputType"));
                             if (jsonObject1.getString("inputType").equals("EditText")) {
                                 EditText editText = new EditText(context);
+                                editText.setLayoutParams(param1);
+                                editText.setWidth(300);
 
                                 editText.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setSb_id(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setInputype(jsonObject1.getString("inputType"));
-                                ll.addView(editText);
+                                linearLayout1.addView(editText);
                             } else if (jsonObject1.getString("inputType").equals("Dropdown")) {
                                 TextView txt_titles = new TextView(context);
                                 txt_titles.setText(jsonObject1.getString("title").trim());
-                                ll.addView(txt_titles);
+                                txt_titles.setLayoutParams(param1);
+                                linearLayout1.addView(txt_titles);
                                 Spinner spinner = new Spinner(context);
+                                spinner.setLayoutParams(param1);
                                 spinner.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setSb_id(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setInputype(jsonObject1.getString("inputType"));
@@ -138,19 +159,21 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
                                 }
                                 ArrayAdapter arrayAdapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, strarr);
                                 spinner.setAdapter(arrayAdapter);
-                                ll.addView(spinner);
+                                linearLayout1.addView(spinner);
                             } else if (jsonObject1.getString("inputType").equals("CheckBox")) {
                                 CheckBox chk = new CheckBox(context);
                                 chk.setId(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setSb_id(Integer.parseInt(jsonObject1.getString("sb_id").trim()));
                                 keyValue.setInputype(jsonObject1.getString("inputType"));
-                                ll.addView(chk);
+                                linearLayout1.addView(chk);
                             }
                             arrayList_keyvalues.add(keyValue);
+                            linearLayout.addView(linearLayout1);
                         } catch (Exception e) {
 
                         }
                     }
+                    ll.addView(linearLayout);
                 } catch (Exception e) {
 
                 }
@@ -213,7 +236,21 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
             Toast.makeText(context, "Error is "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+
+        if (id == android.R.id.home) {
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onPickResult(PickResult r) {
         try {

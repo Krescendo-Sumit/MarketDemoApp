@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -31,7 +32,9 @@ Context context;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context=ReportDetailsActivity.this;
+        setTitle("Report Details");
         sqlightDatabase=new SqlightDatabase(context);
         recyclerView = findViewById(R.id.rc_segment);
         mManager = new LinearLayoutManager(context);
@@ -44,11 +47,25 @@ Context context;
         jsonObject.addProperty("FilterOption", "UniqueSrNo");
         reportDetailsAPI.getReportDetailsMaster(jsonObject);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+
+        if (id == android.R.id.home) {
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onResult(ReportDetailsModel result) {
-        Toast.makeText(context, "SowingDetails "+result.getDemoSegmentDetailsModel().size(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(context, "Charactristics Details "+result.getDemoSowingCharacteristicsMenuModel().size(), Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(context, "SowingDetails "+result.getDemoSegmentDetailsModel().size(), Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(context, "Charactristics Details "+result.getDemoSowingCharacteristicsMenuModel().size(), Toast.LENGTH_SHORT).show();
        try{
 
            try {
@@ -63,11 +80,11 @@ Context context;
            }
            if(sqlightDatabase.deleteTempChractristics())
            {
-               Toast.makeText(context, "Record Removed.", Toast.LENGTH_SHORT).show();
+              // Toast.makeText(context, "Record Removed.", Toast.LENGTH_SHORT).show();
            }
            if(sqlightDatabase.addTempChractristicsDetails(result.getDemoSowingCharacteristicsMenuModel()))
            {
-               Toast.makeText(context, "Temp Data Added.", Toast.LENGTH_SHORT).show();
+            //   Toast.makeText(context, "Temp Data Added.", Toast.LENGTH_SHORT).show();
            }
 
        }catch(Exception r)

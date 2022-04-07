@@ -530,11 +530,20 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     }
 
 
-    public boolean addSowingMaster(SowingMasterModel sowingMasterModel) {
+    public boolean addSowingMaster(SowingMasterModel sowingMasterModel,int action) {
+
 
         SQLiteDatabase mydb = null;
         try {
+
+
             mydb = this.getReadableDatabase();
+            if(action==1) {
+
+                String q = "delete from " + TBL_SOWING_MASTER +" where UniqueSrNo='"+sowingMasterModel.getUniqueSrNo()+"'";
+                mydb.execSQL(q);
+                Log.i("Record Deleted","Success");
+            }
             ContentValues values = new ContentValues();
             values.put("UniqueSrNo", sowingMasterModel.getUniqueSrNo());// TEXT," +
             values.put("FarmerName", sowingMasterModel.getFarmerName());//  TEXT," +
@@ -577,7 +586,10 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         SQLiteDatabase mydb = null;
         try {
             mydb = this.getReadableDatabase();
-            String q = "update TBL_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
+            String q = "Delete from TBL_SOWING_MASTER";
+            Log.i("Query is -------> ", "" + q);
+            mydb.execSQL(q);
+            q = "Delete from TBL_SOWING_MASTER";
             Log.i("Query is -------> ", "" + q);
             mydb.execSQL(q);
             return true;
@@ -595,7 +607,12 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         SQLiteDatabase mydb = null;
         try {
             mydb = this.getReadableDatabase();
-            String q = "update TBL_UPDATE_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
+         //   String q = "update TBL_UPDATE_SOWING_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
+            String q = "Delete from  TBL_UPDATE_SOWING_MASTER  where UniqueSrNo='" + UniqueNo + "'";
+            Log.i("Query is -------> ", "" + q);
+            mydb.execSQL(q);
+          //  q = "update TBL_MENU_MASTER set SyncStatus=1 where UniqueSrNo='" + UniqueNo + "'";
+            q = "Delete from  TBL_MENU_MASTER  where UniqueSrNo='" + UniqueNo + "'";
             Log.i("Query is -------> ", "" + q);
             mydb.execSQL(q);
             return true;
@@ -605,7 +622,6 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         } finally {
             mydb.close();
         }
-
     }
 
     public ArrayList<ActionModel> getLocalActionsList(int pendingfor) {
@@ -858,6 +874,48 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 arrayLists.add(sowingMasterModel);
             }
             return arrayLists;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            mydb.close();
+        }
+    }
+    public SowingMasterModel getLocalSowingDetailsByUniqueNo(String uniqueId) {
+        SQLiteDatabase mydb = null;
+        String k = "";
+        SowingMasterModel sowingMasterModel = null;
+        ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
+        try {
+            mydb = this.getReadableDatabase();
+            String q = "SELECT  * FROM " + TBL_SOWING_MASTER + " where UniqueSrNo='" + uniqueId+"'";
+             Log.i("Qu",q);
+            Cursor c = mydb.rawQuery(q, null);
+            if (c.moveToNext()) {
+                Log.i("Row", c.getString(3));
+                sowingMasterModel = new SowingMasterModel();
+                sowingMasterModel.setUniqueSrNo(c.getString(0));//
+                sowingMasterModel.setFarmerName(c.getString(1));//", sowingMasterModel.getFarmerName());//  TEXT," +
+                sowingMasterModel.setMobileNo(c.getString(2));//", sowingMasterModel.getMobileNo());// TEXT," +
+                sowingMasterModel.setWhatsAppNo(c.getString(3));//", sowingMasterModel.getWhatsAppNo());// TEXT," +
+                sowingMasterModel.setNameOfHybrid(c.getString(4));//", sowingMasterModel.getNameOfHybrid());// TEXT," +
+                sowingMasterModel.setCheckHybrid(c.getString(5));//", sowingMasterModel.getCheckHybrid());// TEXT," +
+                sowingMasterModel.setCompanyOfCheckHybrid(c.getString(6));//", sowingMasterModel.getCompanyOfCheckHybrid());// TEXT," +
+                sowingMasterModel.setDOS(c.getString(7));//", sowingMasterModel.getDOS());// TEXT," +
+                sowingMasterModel.setLatitude(c.getString(8));//", sowingMasterModel.getLatitude());// TEXT," +
+                sowingMasterModel.setLongitude(c.getString(9));//", sowingMasterModel.getLongitude());// TEXT," +
+                sowingMasterModel.setResAddr(c.getString(10));//", sowingMasterModel.getResAddr());// TEXT," +
+                sowingMasterModel.setProductId(c.getInt(11));//", sowingMasterModel.getProductId());// INTEGER," +
+                sowingMasterModel.setPendingFor(c.getInt(12));//", sowingMasterModel.getPendingFor());// INTEGER," +
+                sowingMasterModel.setVillageName(c.getString(13));//", sowingMasterModel.getUniqueSrNo());// TEXT," +
+                sowingMasterModel.setUserCode(c.getString(14));//", sowingMasterModel.getUserCode());// TEXT," +
+                sowingMasterModel.setSyncStatus(c.getInt(15));//", sowingMasterModel.getSyncStatus());// INTERGER," +
+                sowingMasterModel.setDownlaodStatus(c.getInt(16));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageName(c.getString(17));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageinByte(c.getString(18));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+
+
+            }
+            return sowingMasterModel;
         } catch (Exception e) {
             return null;
         } finally {

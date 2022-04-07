@@ -93,8 +93,8 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
             holder.tvState.setText(actionModel.getState());
             holder.tvTotalMDSeedAvlInGram.setText(actionModel.getTotalMDSeedAvlInGram());
             holder.tvNoOfKits.setText(actionModel.getNoOfKits());
-            holder.tvDistrictId.setText(actionModel.getDistrictId());
-            holder.tvTalukaId.setText(actionModel.getTalukaId());
+            holder.tvDistrictId.setText(actionModel.getDistrictName());
+            holder.tvTalukaId.setText(actionModel.getTalukaName());
             holder.tvAssignedTo.setText(actionModel.getAssignedTo());
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
             holder.tvProductId.setText(actionModel.getProductId());

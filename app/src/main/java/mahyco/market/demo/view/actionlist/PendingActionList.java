@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -35,6 +36,7 @@ public class PendingActionList extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_action_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context= PendingActionList.this;
         sqlightDatabase=new SqlightDatabase(context);
         rc_pendingaction=findViewById(R.id.rc_pendingaction);
@@ -57,6 +59,20 @@ public class PendingActionList extends AppCompatActivity  {
 
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+
+        if (id == android.R.id.home) {
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

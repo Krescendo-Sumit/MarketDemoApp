@@ -297,8 +297,13 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     public  void showUploadCount() {
-        btn_uplaod_update_sowingdetails.setText(""+ sqlightDatabase.getUpdateSowingDetails(0).size());
-        btn_uplaod_pending_sowingdetails.setText(""+ sqlightDatabase.getLocalSowingDetails(0).size());
+        try {
+            btn_uplaod_update_sowingdetails.setText("" + sqlightDatabase.getUpdateSowingDetails(0).size());
+            btn_uplaod_pending_sowingdetails.setText("" + sqlightDatabase.getLocalSowingDetails(0).size());
+        }catch (NullPointerException e)
+        {
+
+        }
 
     }
 

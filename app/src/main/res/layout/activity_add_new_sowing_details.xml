@@ -435,7 +435,7 @@
                             android:layout_weight="6.5"
                             android:drawableLeft="@drawable/calender"
                             android:fontFamily="@font/comforta"
-                            android:text="@string/dos_full"
+                            android:hint="@string/dos_full"
                             android:textColor="@color/black"
                             android:textSize="12sp"
                             android:textStyle="normal" />

@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,7 +62,7 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             edMDHybridName,
             edCheckHybridName,
             edCheckHybridCompany,
-            edResAddr,edDateOfSowing;
+            edResAddr, edDateOfSowing;
 
     TextView edGeoTagging, txt_chooseimage;
 
@@ -89,15 +90,33 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
     int mYear, mMonth, mDay;
     SowingMasterModel sowingMasterModel;
     private FusedLocationProviderClient fusedLocationClient;
-String file_path,base64_image;
+    String file_path, base64_image;
+    SowingMasterModel localSowingMasterModel;
+    int action = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_sowing_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+
+        if (id == android.R.id.home) {
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     public void init() {
         try {
 
@@ -105,8 +124,9 @@ String file_path,base64_image;
             sqlightDatabase = new SqlightDatabase(context);
             sowingMasterModel = new SowingMasterModel();
             uniqueSrId = Preferences.get(context, Preferences.SELECTED_UNIQSRID);
-            setTitle("" + uniqueSrId);
-            // Toast.makeText(context, ""+uniqueSrId, Toast.LENGTH_SHORT).show();
+            setTitle("New Sowing -" + uniqueSrId);
+            Toast.makeText(context, "" + uniqueSrId, Toast.LENGTH_SHORT).show();
+
             edUno = findViewById(R.id.edUno);
             edState = findViewById(R.id.edState);
             edDistrict = findViewById(R.id.edDistrict);
@@ -187,40 +207,58 @@ String file_path,base64_image;
                 @Override
                 public void onClick(View view) {
                     if (validateUIElement()) {
-                        sowingMasterModel.setUniqueSrNo(UniqueSrNo);//
-                        sowingMasterModel.setFarmerName(FarmerName);//  TEXT," +
-                        sowingMasterModel.setMobileNo(MobileNo);// TEXT," +
-                        sowingMasterModel.setWhatsAppNo(WhatsAppNo);// TEXT," +
-                        sowingMasterModel.setNameOfHybrid(NameOfHybrid);// TEXT," +
-                        sowingMasterModel.setCheckHybrid(CheckHybrid);// TEXT," +
-                        sowingMasterModel.setCompanyOfCheckHybrid(CompanyOfCheckHybrid);// TEXT," +
-                        sowingMasterModel.setDOS(DOS);// TEXT," +
-                        sowingMasterModel.setLatitude(Latitude);// TEXT," +
-                        sowingMasterModel.setLongitude(longitude);// TEXT," +
-                        sowingMasterModel.setResAddr(ResAddr);// TEXT," +
-                        sowingMasterModel.setProductId(ProductId);// INTEGER," +
-                        sowingMasterModel.setPendingFor(PendingFor);// INTEGER," +
-                        sowingMasterModel.setVillageName(VillageName);// TEXT," +
-                        sowingMasterModel.setUserCode(UserCode);// TEXT," +
-                        sowingMasterModel.setSyncStatus(SyncStatus);// INTERGER," +
-                        sowingMasterModel.setDownlaodStatus(DownlaodStatus);// INTEGER"
-                        sowingMasterModel.setImageName("");// INTEGER"
-                      //  sowingMasterModel.setImageinByte(base64_image);// INTEGER"
-                        sowingMasterModel.setImageinByte("");// INTEGER"
+                        if (action == 0) {
+
+                            sowingMasterModel.setUniqueSrNo(UniqueSrNo);//
+                            sowingMasterModel.setFarmerName(FarmerName);//  TEXT," +
+                            sowingMasterModel.setMobileNo(MobileNo);// TEXT," +
+                            sowingMasterModel.setWhatsAppNo(WhatsAppNo);// TEXT," +
+                            sowingMasterModel.setNameOfHybrid(NameOfHybrid);// TEXT," +
+                            sowingMasterModel.setCheckHybrid(CheckHybrid);// TEXT," +
+                            sowingMasterModel.setCompanyOfCheckHybrid(CompanyOfCheckHybrid);// TEXT," +
+                            sowingMasterModel.setDOS(DOS);// TEXT," +
+                            sowingMasterModel.setLatitude(Latitude);// TEXT," +
+                            sowingMasterModel.setLongitude(longitude);// TEXT," +
+                            sowingMasterModel.setResAddr(ResAddr);// TEXT," +
+                            sowingMasterModel.setProductId(ProductId);// INTEGER," +
+                            sowingMasterModel.setPendingFor(PendingFor);// INTEGER," +
+                            sowingMasterModel.setVillageName(VillageName);// TEXT," +
+                            sowingMasterModel.setUserCode(UserCode);// TEXT," +
+                            sowingMasterModel.setSyncStatus(SyncStatus);// INTERGER," +
+                            sowingMasterModel.setDownlaodStatus(DownlaodStatus);// INTEGER"
+                            sowingMasterModel.setImageName("");// INTEGER"
+                            //  sowingMasterModel.setImageinByte(base64_image);// INTEGER"
+                            sowingMasterModel.setImageinByte("");// INTEGER"
 
 
-                        if (sqlightDatabase.addSowingMaster(sowingMasterModel)) {
-                            Intent intent = new Intent(context, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            Toast.makeText(context, "Record Saved", Toast.LENGTH_SHORT).show();
+                            if (sqlightDatabase.addSowingMaster(sowingMasterModel, action)) {
+                                Intent intent = new Intent(context, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                Toast.makeText(context, "Record Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                            localSowingMasterModel.setFarmerName(FarmerName);//  TEXT," +
+                            localSowingMasterModel.setMobileNo(MobileNo);// TEXT," +
+                            localSowingMasterModel.setWhatsAppNo(WhatsAppNo);// TEXT," +
+                            localSowingMasterModel.setNameOfHybrid(NameOfHybrid);// TEXT," +
+                            localSowingMasterModel.setCheckHybrid(CheckHybrid);// TEXT," +
+                            localSowingMasterModel.setCompanyOfCheckHybrid(CompanyOfCheckHybrid);// TEXT," +
+                            localSowingMasterModel.setDOS(DOS);
+                            localSowingMasterModel.setResAddr(ResAddr);// TEXT," +
+                            if (sqlightDatabase.addSowingMaster(localSowingMasterModel, action)) {
+                                Intent intent = new Intent(context, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                Toast.makeText(context, "Record Updated", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                            }
                         }
-
                     }
                 }
-
             });
 
 
@@ -251,8 +289,36 @@ String file_path,base64_image;
                 }
             });
 
+            localSowingMasterModel = sqlightDatabase.getLocalSowingDetailsByUniqueNo(uniqueSrId);
+            //  Toast.makeText(context, "" + localSowingMasterModel.getFarmerName(), Toast.LENGTH_SHORT).show();
+
+            if (localSowingMasterModel != null) {
+                Toast.makeText(context, "" + localSowingMasterModel.getFarmerName(), Toast.LENGTH_SHORT).show();
+                action = 1;
+                loadData();
+            }
+
+
         } catch (Exception e) {
             Toast.makeText(context, "Error in AddNewSowingDetails" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadData() {
+        try {
+
+
+            edFarmerName.setText(localSowingMasterModel.getFarmerName());// = findViewById(R.id.edFarmerName);
+            edFarmerMoNo.setText(localSowingMasterModel.getMobileNo());// = findViewById(R.id.edFarmerMoNo);
+            edFarmerWANo.setText(localSowingMasterModel.getWhatsAppNo());// = findViewById(R.id.edFarmerWANo);
+            edMDHybridName.setText(localSowingMasterModel.getNameOfHybrid());// = findViewById(R.id.edMDHybridName);
+            edCheckHybridName.setText(localSowingMasterModel.getCheckHybrid());// = findViewById(R.id.edCheckHybridName);
+            edCheckHybridCompany.setText(localSowingMasterModel.getCompanyOfCheckHybrid());// = findViewById(R.id.edCheckHybridCompany);
+            edDateOfSowing.setText(localSowingMasterModel.getDOS());// = findViewById(R.id.edDateOfSowing);
+            edResAddr.setText(localSowingMasterModel.getResAddr());// = findViewById(R.id.edResAddress);
+
+        } catch (Exception e) {
+
         }
     }
 
@@ -296,7 +362,49 @@ String file_path,base64_image;
             UserCode = Preferences.get(context, Preferences.USER_ID);
             SyncStatus = 0;
             DownlaodStatus = 0;
-            return true;
+            int cnt = 0;
+            if (uniqueSrId.equals("")) {
+                edUno.setError("Enter UniqueSrNo ");
+                cnt++;
+            }
+            if (FarmerName.equals("")) {
+                edFarmerName.setError("Enter Farmer Name ");
+                cnt++;
+            }
+            if (MobileNo.equals("") || MobileNo.length() < 10) {
+                edFarmerMoNo.setError("Enter Valid Mobile Number ");
+                cnt++;
+            }
+            if (NameOfHybrid.equals("")) {
+                edMDHybridName.setError("Enter Name Of Hybrid");
+                cnt++;
+            }
+            if (CheckHybrid.equals("")) {
+                edCheckHybridName.setError("Enter Check Hybrid Name ");
+                cnt++;
+            }
+            if (CompanyOfCheckHybrid.equals("")) {
+                edCheckHybridCompany.setError("Enter Check Hybrid Company ");
+                cnt++;
+            }
+            if (DOS.equals("")) {
+                edDateOfSowing.setError("Choose DOS");
+                cnt++;
+            }
+            if (ResAddr.equals("")) {
+                edResAddr.setError("Enter Address ");
+                cnt++;
+            }
+            if (UserCode.equals("")) {
+                Toast.makeText(context, "User Code Missing.", Toast.LENGTH_SHORT).show();
+                cnt++;
+            }
+
+            if (cnt == 0)
+                return true;
+            else
+                return false;
+
         } catch (Exception e) {
             return false;
         }
@@ -306,7 +414,7 @@ String file_path,base64_image;
     public void onPickResult(PickResult r) {
         try {
             img_famerimage.setImageBitmap(r.getBitmap());
-            file_path=r.getPath();
+            file_path = r.getPath();
             base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());
         } catch (Exception e) {
 

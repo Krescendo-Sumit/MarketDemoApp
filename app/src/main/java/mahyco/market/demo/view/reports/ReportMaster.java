@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -31,7 +32,9 @@ public class ReportMaster extends AppCompatActivity implements ReportAPI.ReportA
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_report_master);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = ReportMaster.this;
+        setTitle("Reports");
         recyclerView = findViewById(R.id.recyclerView);
         mManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mManager);
@@ -43,7 +46,21 @@ public class ReportMaster extends AppCompatActivity implements ReportAPI.ReportA
         jsonObject.addProperty("FilterOption", "UserCode");
         reportAPI.getReportMasster(jsonObject);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+
+        if (id == android.R.id.home) {
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onResult(String result) {
 
