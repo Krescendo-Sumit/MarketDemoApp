@@ -145,7 +145,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
 
 
 
-            int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
+            int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo(),actionModel.getPendingFor());
             if (k > 0) {
                 holder.btnDownloadPA.setText("Already Downloaded");
             }
@@ -154,7 +154,18 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                 @Override
                 public void onClick(View view) {
                   //  Toast.makeText(context, "" + sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()), Toast.LENGTH_SHORT).show();
-                    int k = sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
+                    int pendingfor = Integer.parseInt(actionModel.getPendingFor().trim());
+
+                    int k =00;// sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo()) + sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo(),actionModel.getPendingFor());
+                  //  int k = sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo());
+                     if(pendingfor>1)
+                     {
+                         k=sqlightDatabase.getSowingUpdateMasterCount(actionModel.getUniqueSrNo(),actionModel.getPendingFor());
+                     }else
+                     {
+                         k=sqlightDatabase.getSowingMasterCount(actionModel.getUniqueSrNo());
+                     }
+
                     if (k > 0) {
                         holder.btnDownloadPA.setText("Already Downloaded");
                     }
@@ -163,8 +174,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                         Toast.makeText(context, "Already Exist!", Toast.LENGTH_SHORT).show();
                     } else {
                         Preferences.save(context, Preferences.SELECTED_UNIQSRID,actionModel.getUniqueSrNo());
-                        int pendingfor = Integer.parseInt(actionModel.getPendingFor().trim());
-                        if (pendingfor > 1) {
+                      if (pendingfor > 1) {
                             if (sqlightDatabase.getChracteristics(actionModel.getProductId(), actionModel.getUniqueSrNo()).size() > 0) {
 
                             } else {

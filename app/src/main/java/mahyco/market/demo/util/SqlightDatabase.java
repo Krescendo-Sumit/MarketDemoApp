@@ -793,7 +793,8 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 updateSowingModel.setUniqueSrNo(c.getString(1));
                 updateSowingModel.setProductId(c.getInt(2));
                 updateSowingModel.setImageName(c.getString(3));
-                updateSowingModel.setImageinByte(c.getString(4));
+                //updateSowingModel.setImageinByte(c.getString(4));
+                updateSowingModel.setImageinByte("");
                 updateSowingModel.setPendingFor(c.getInt(5));
                 updateSowingModel.setUserCode(c.getString(6));
                 updateSowingModel.setSyncstatus(c.getInt(7));
@@ -962,7 +963,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public int getSowingUpdateMasterCount(String uniquenumber) {
+    public int getSowingUpdateMasterCount(String uniquenumber,String pendingFor) {
         SQLiteDatabase mydb = null;
         String k = "";
         int cnt = 0;
@@ -970,7 +971,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         ArrayList<SowingMasterModel> arrayLists = new ArrayList<SowingMasterModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "select * from TBL_UPDATE_SOWING_MASTER where UniqueSrNo='" + uniquenumber + "'";
+            String q = "select * from TBL_UPDATE_SOWING_MASTER where UniqueSrNo='" + uniquenumber + "' and PendingFor='"+pendingFor+"'";
             Log.i("Query ", q);
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
