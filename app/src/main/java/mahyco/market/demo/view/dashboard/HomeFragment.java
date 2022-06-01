@@ -176,7 +176,8 @@ public class HomeFragment extends Fragment implements HomeListener {
                         json.addProperty("VillageName", m.getVillageName());
                         json.addProperty("UserCode", m.getUserCode());
                         json.addProperty("ImageName", m.getImageName());//
-                        json.addProperty("ImageinByte", m.getImageinByte());
+                     //   json.addProperty("ImageinByte","");// m.getImageinByte().replace("\n",""));
+                        json.addProperty("ImageinByte",m.getImageinByte().replace("\n",""));
                         jsonArray.add(json);
                     }
                     jsonObject.add("cropSowingModel", jsonArray);
@@ -216,7 +217,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                     json.addProperty("UniqueSrNo", m.getUniqueSrNo());//
                     json.addProperty("ProductId", m.getProductId());//
                     json.addProperty("ImageName", m.getImageName());//
-                    json.addProperty("ImageinByte", m.getImageinByte());//
+                    json.addProperty("ImageinByte", m.getImageinByte().replace("\n",""));//
                     json.addProperty("PendingFor", m.getPendingFor());//
                     json.addProperty("UserCode", m.getUserCode());//
                     JsonArray jsonArray_menu = new JsonArray();

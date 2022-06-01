@@ -104,7 +104,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
             holder.tvProductId.setText(actionModel.getProductId());
             holder.tvVisitStageId.setText(actionModel.getVisitStageId());
-            holder.tvVisitStage.setText(actionModel.getVisitStage());
+            holder.tvVisitStage.setText(actionModel.getPendingVisitStage());
             holder.tvDemoCropSowingId.setText(actionModel.getDemoCropSowingId());
 
             if(Integer.parseInt(actionModel.getPendingFor().trim())>1)

@@ -99,7 +99,7 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
             holder.tvProductId.setText(actionModel.getProductId());
             holder.tvVisitStageId.setText(actionModel.getVisitStageId());
-            holder.tvVisitStage.setText(actionModel.getVisitStage());
+            holder.tvVisitStage.setText(actionModel.getPendingVisitStage());
             holder.tvDemoCropSowingId.setText(actionModel.getDemoCropSowingId());
 
             if(Integer.parseInt(actionModel.getPendingFor().trim())>1)
@@ -146,14 +146,15 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
                        Preferences.save(context, Preferences.SELECTED_PRODUCTCODE, actionModel.getProductId());
                        Preferences.save(context, Preferences.SELECTED_PENDINGFOR, actionModel.getPendingFor());
                        Preferences.save(context, Preferences.SELECTED_DEMOCROPSOWINGID, actionModel.getDemoCropSowingId());
+                       Preferences.save(context, Preferences.SELECTED_DEMOCROPNAME, actionModel.getCrop());
 
                        int  pendingfor=Integer.parseInt(actionModel.getPendingFor().trim());
                        if (pendingfor>1) {
-                           Intent intent = new Intent(context, SowingUpdateActivity.class);
+                           Intent intent = new Intent(context,SowingUpdateActivity.class);
                            context.startActivity(intent);
                      }else
                        {
-
+                           Toast.makeText(context, ""+actionModel.getNameOfHybrid(), Toast.LENGTH_SHORT).show();
                            Intent intent = new Intent(context, AddNewSowingDetails.class);
                             context.startActivity(intent);
 

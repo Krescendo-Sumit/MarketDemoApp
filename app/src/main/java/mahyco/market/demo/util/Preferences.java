@@ -41,6 +41,7 @@ public class Preferences {
     public static final String SELECTED_PENDINGFOR ="SELECTED_PENDINGFOR" ;
     public static final String SELECTED_DEMOCROPSOWINGID = "DEMO_CROP_SOWING_ID";
     public static final String PENDINGFOR_LOCALLIST = "PENDING_FOR_LOCAL_LIST";
+    public static final String SELECTED_DEMOCROPNAME = "DEMOCROPNAME";
 
     public Preferences(Context context) {
     }

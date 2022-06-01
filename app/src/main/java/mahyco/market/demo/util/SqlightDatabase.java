@@ -793,8 +793,8 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 updateSowingModel.setUniqueSrNo(c.getString(1));
                 updateSowingModel.setProductId(c.getInt(2));
                 updateSowingModel.setImageName(c.getString(3));
-                //updateSowingModel.setImageinByte(c.getString(4));
-                updateSowingModel.setImageinByte("");
+                updateSowingModel.setImageinByte(c.getString(4));
+                //updateSowingModel.setImageinByte("");
                 updateSowingModel.setPendingFor(c.getInt(5));
                 updateSowingModel.setUserCode(c.getString(6));
                 updateSowingModel.setSyncstatus(c.getInt(7));

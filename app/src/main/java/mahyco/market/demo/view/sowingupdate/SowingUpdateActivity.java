@@ -91,7 +91,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
             jsonObject.addProperty("VisitStageId", pendingfor);
             //   sowingUpdateAPI.getChartristics(jsonObject);
             arrayList = sqlightDatabase.getChracteristics("" + productid, uniqueid);
-            Toast.makeText(context, "Size " + arrayList.size(), Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(context, "Size " + arrayList.size(), Toast.LENGTH_SHORT).show();
 
             for (LocalCharactersticsModel model : arrayList) {
                 try {
@@ -131,8 +131,16 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
                             keyValue.setCreatedDt(""+formattedDate);
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                             Log.i("InputType : ", jsonObject1.getString("inputType"));
-                            if (jsonObject1.getString("inputType").equals("EditText")) {
+                            if (jsonObject1.getString("inputType").equals("Edit Text")) {
+
+//                                TextView txt_titles = new TextView(context);
+//                                txt_titles.setText(jsonObject1.getString("title").trim());
+//                                txt_titles.setLayoutParams(param1);
+//                                linearLayout1.addView(txt_titles);
+
+
                                 EditText editText = new EditText(context);
+                                editText.setHint(jsonObject1.getString("title").trim());
                                 editText.setLayoutParams(param1);
                                 editText.setWidth(300);
 

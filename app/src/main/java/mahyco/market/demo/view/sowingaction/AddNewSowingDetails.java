@@ -144,6 +144,38 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             btnSowingSubmit = findViewById(R.id.btnSowingSubmit);
             txt_chooseimage = findViewById(R.id.txt_choose_image);
             img_famerimage = findViewById(R.id.img_farmer);
+            edMDHybridName.setText(""+Preferences.get(context,Preferences.SELECTED_DEMOCROPNAME));
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+
+                        Latitude = "" + location.getLatitude();
+                        longitude = "" + location.getLongitude();
+                        //Toast.makeText(context, "Location Latitude : " + location.getLatitude() + " Longitude :" + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                        edGeoTagging.setText(location.getLatitude() + "," + location.getLongitude());
+                    }
+                }
+            });
+
+
+
+
             txt_chooseimage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -226,9 +258,9 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
                             sowingMasterModel.setUserCode(UserCode);// TEXT," +
                             sowingMasterModel.setSyncStatus(SyncStatus);// INTERGER," +
                             sowingMasterModel.setDownlaodStatus(DownlaodStatus);// INTEGER"
-                            sowingMasterModel.setImageName("");// INTEGER"
-                            //  sowingMasterModel.setImageinByte(base64_image);// INTEGER"
-                            sowingMasterModel.setImageinByte("");// INTEGER"
+                           sowingMasterModel.setImageName("");// INTEGER"
+                              sowingMasterModel.setImageinByte(base64_image);// INTEGER"
+                          //  sowingMasterModel.setImageinByte("");// INTEGER"
 
 
                             if (sqlightDatabase.addSowingMaster(sowingMasterModel, action)) {
@@ -262,32 +294,6 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             });
 
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-
-                        Latitude = "" + location.getLatitude();
-                        longitude = "" + location.getLongitude();
-                        // Toast.makeText(context, "Location Latitude : " + location.getLatitude() + " Longitude :" + location.getLongitude(), Toast.LENGTH_SHORT).show();
-                        edGeoTagging.setText(location.getLatitude() + "," + location.getLongitude());
-                    }
-                }
-            });
 
             localSowingMasterModel = sqlightDatabase.getLocalSowingDetailsByUniqueNo(uniqueSrId);
             //  Toast.makeText(context, "" + localSowingMasterModel.getFarmerName(), Toast.LENGTH_SHORT).show();
