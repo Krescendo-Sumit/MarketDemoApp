@@ -217,8 +217,14 @@ public class HomeFragment extends Fragment implements HomeListener {
                     json.addProperty("UniqueSrNo", m.getUniqueSrNo());//
                     json.addProperty("ProductId", m.getProductId());//
                     json.addProperty("ImageName", m.getImageName());//
-                    json.addProperty("ImageinByte", m.getImageinByte().replace("\n",""));//
-                    json.addProperty("PendingFor", m.getPendingFor());//
+                    if(m.getImageinByte()!=null) {
+                        json.addProperty("ImageinByte", m.getImageinByte().replace("\n", ""));//
+                    }else {
+                        json.addProperty("ImageinByte", "");//
+
+                    }
+                        json.addProperty("PendingFor", m.getPendingFor());//
+
                     json.addProperty("UserCode", m.getUserCode());//
                     JsonArray jsonArray_menu = new JsonArray();
                     JsonObject jsonObject_menu = new JsonObject();

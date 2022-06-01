@@ -146,6 +146,7 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
                        Preferences.save(context, Preferences.SELECTED_PRODUCTCODE, actionModel.getProductId());
                        Preferences.save(context, Preferences.SELECTED_PENDINGFOR, actionModel.getPendingFor());
                        Preferences.save(context, Preferences.SELECTED_DEMOCROPSOWINGID, actionModel.getDemoCropSowingId());
+                       Preferences.save(context, Preferences.SELECTED_STAGE, actionModel.getPendingVisitStage());
                        Preferences.save(context, Preferences.SELECTED_DEMOCROPNAME, actionModel.getCrop());
 
                        int  pendingfor=Integer.parseInt(actionModel.getPendingFor().trim());

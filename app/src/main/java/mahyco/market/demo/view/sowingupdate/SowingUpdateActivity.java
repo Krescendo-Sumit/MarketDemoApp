@@ -53,14 +53,14 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
     Context context;
     JsonObject jsonObject;
     int pendingfor, productid,democropsowingid;
-    String uniqueid,usercode;
+    String uniqueid,usercode,cropstage="";
     SqlightDatabase sqlightDatabase;
     ArrayList<LocalCharactersticsModel> arrayList;
     LinearLayout ll;
     ArrayList<KeyValue> arrayList_keyvalues;
     TextView  txt_chooseimage;
     ImageView img_famerimage;
-    String file_path,base64_image;
+    String file_path="",base64_image="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +82,9 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
 
             pendingfor = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PENDINGFOR).toString().trim());
             uniqueid = Preferences.get(context, Preferences.SELECTED_UNIQSRID).toString().trim();
-            setTitle("Updated Sowing -"+uniqueid);
+            cropstage = Preferences.get(context, Preferences.SELECTED_STAGE).toString().trim();
+
+            setTitle("  "+cropstage+" - "+uniqueid);
             usercode = Preferences.get(context, Preferences.USER_ID).toString().trim();
             productid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_PRODUCTCODE).toString().trim());
             democropsowingid = Integer.parseInt(Preferences.get(context, Preferences.SELECTED_DEMOCROPSOWINGID).toString().trim());
@@ -222,22 +224,26 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
                         }
                     }
 
-                    if(sqlightDatabase.addSowingUpdateMaster(democropsowingid,uniqueid,productid,"",base64_image,pendingfor,usercode))
+
+                    if(base64_image.trim().equals(""))
                     {
-                        Toast.makeText(context, "Master Data Added.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Please take a photo.", Toast.LENGTH_SHORT).show();
+                    }else {
+                        if (sqlightDatabase.addSowingUpdateMaster(democropsowingid, uniqueid, productid, "", base64_image, pendingfor, usercode)) {
+                            Toast.makeText(context, "Master Data Added.", Toast.LENGTH_SHORT).show();
 
+                        }
+                        if (sqlightDatabase.addMenus(arrayList_keyvalues)) {
+                            Toast.makeText(context, "Menu Details Added Successfully.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        Toast.makeText(context, "Record Saved", Toast.LENGTH_SHORT).show();
+
+                        //  Toast.makeText(context, "" + arrayList_keyvalues.size(), Toast.LENGTH_SHORT).show();
                     }
-                    if(sqlightDatabase.addMenus(arrayList_keyvalues))
-                    {
-                        Toast.makeText(context, "Menu Details Added Successfully.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    Toast.makeText(context, "Record Saved", Toast.LENGTH_SHORT).show();
-
-                    //  Toast.makeText(context, "" + arrayList_keyvalues.size(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
@@ -262,6 +268,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
     @Override
     public void onPickResult(PickResult r) {
         try {
+            base64_image="";
             img_famerimage.setImageBitmap(r.getBitmap());
             file_path=r.getPath();
             base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());
