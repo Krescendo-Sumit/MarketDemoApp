@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -38,7 +41,7 @@ RecyclerView rc_pendingaction;
     LinearLayoutManager mManager;
     ActionAdapter actionAdapter;
     SqlightDatabase sqlightDatabase;
-
+    EditText et_search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,23 @@ RecyclerView rc_pendingaction;
         jsonObject.addProperty("filterValue", Preferences.get(context, Preferences.USER_ID));
         jsonObject.addProperty("FilterOption", "UserCode");
         pendingActionAPI.getPendingActions(jsonObject);
+        et_search=findViewById(R.id.et_search);
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                actionAdapter.getFilter().filter(charSequence.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

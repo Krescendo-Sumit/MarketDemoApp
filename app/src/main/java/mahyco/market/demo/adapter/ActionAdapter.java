@@ -3,6 +3,7 @@ package mahyco.market.demo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Movie;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
@@ -29,7 +33,7 @@ import mahyco.market.demo.util.SqlightDatabase;
 import mahyco.market.demo.view.pendingaction.PendingActionAPI;
 
 
-public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObjectHolder> {
+public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObjectHolder> implements Filterable {
 
 
     Context context;
@@ -37,6 +41,8 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
     private static final int UNSELECTED = -1;
     PendingActionAPI pendingActionAPI;
     ArrayList<ActionModel> actionModelArrayList = null;
+    ArrayList<ActionModel> actionModelArrayList_filter = null;
+    private ArrayList<ActionModel> movieListFiltered;
 
     public interface EventListener {
         void onDelete(int trid, int position);
@@ -45,6 +51,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
     public ActionAdapter(ArrayList<ActionModel> actionModels, Context context, PendingActionAPI pendingActionAPI) {
 
         this.actionModelArrayList = actionModels;
+        actionModelArrayList_filter = new ArrayList<>(actionModelArrayList);
         Log.i("Action Count:", ">>" + actionModels.size());
         this.context = context;
         sqlightDatabase = new SqlightDatabase(context);
@@ -283,5 +290,34 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
         }
     }
 
+    @Override
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+    private Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<ActionModel> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(actionModelArrayList_filter);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (ActionModel item : actionModelArrayList_filter) {
+                    if (item.getFarmerName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            actionModelArrayList.clear();
+            actionModelArrayList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 }

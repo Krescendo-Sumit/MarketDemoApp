@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -32,6 +35,7 @@ public class PendingActionList extends AppCompatActivity  {
     RecyclerView rc_pendingaction;
     LinearLayoutManager mManager;
     Action_Local_Adapter actionAdapter;
+    EditText et_search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,23 @@ public class PendingActionList extends AppCompatActivity  {
         rc_pendingaction.setLayoutManager(mManager);
         int pendingfor=Integer.parseInt(Preferences.get(context,Preferences.PENDINGFOR_LOCALLIST));
         laodLocalAction(sqlightDatabase.getLocalActionsList(pendingfor));
+        et_search=findViewById(R.id.et_search);
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                actionAdapter.getFilter().filter(charSequence.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
     public void laodLocalAction(List<ActionModel> lst_actionModels)
     {

@@ -6,8 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".view.pendingaction.PendingActionActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rc_pendingaction"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_style"
+            android:drawableLeft="@drawable/ic_baseline_search_24"
+            android:ems="10"
+            android:hint="Enter Farmer Name...."
+            android:inputType="textPersonName"
+            android:padding="10dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rc_pendingaction"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
 </RelativeLayout>

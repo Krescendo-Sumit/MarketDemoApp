@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
@@ -24,7 +27,7 @@ import mahyco.market.demo.view.sowingaction.AddNewSowingDetails;
 import mahyco.market.demo.view.sowingupdate.SowingUpdateActivity;
 
 
-public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adapter.DataObjectHolder> {
+public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adapter.DataObjectHolder> implements Filterable {
 
 
     Context context;
@@ -32,7 +35,7 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
     private static final int UNSELECTED = -1;
 
     ArrayList<ActionModel> actionModelArrayList = null;
-
+    ArrayList<ActionModel> actionModelArrayList_filter = null;
     public interface EventListener {
         void onDelete(int trid, int position);
     }
@@ -40,6 +43,7 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
     public Action_Local_Adapter(ArrayList<ActionModel> actionModels, Context context) {
 
         this.actionModelArrayList = actionModels;
+        actionModelArrayList_filter = new ArrayList<>(actionModelArrayList);
         Log.i("Action Count:", ">>" + actionModels.size());
         this.context = context;
         sqlightDatabase=new SqlightDatabase(context);
@@ -244,6 +248,36 @@ public class Action_Local_Adapter extends RecyclerView.Adapter<Action_Local_Adap
             btnDownloadPA = (Button) itemView.findViewById(R.id.btnDownloadPA);
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+    private Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<ActionModel> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(actionModelArrayList_filter);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (ActionModel item : actionModelArrayList_filter) {
+                    if (item.getFarmerName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            actionModelArrayList.clear();
+            actionModelArrayList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 
 }
