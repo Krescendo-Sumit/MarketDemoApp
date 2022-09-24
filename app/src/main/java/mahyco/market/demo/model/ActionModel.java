@@ -315,6 +315,38 @@ public class ActionModel {
     String DOS;
 
 
+    //New Location Changes
+
+    public String getTaluka() {
+        return Taluka;
+    }
+
+    public void setTaluka(String taluka) {
+        Taluka = taluka;
+    }
+
+    String Taluka;
+
+    public String getDistrict() {
+        return District;
+    }
+
+    public void setDistrict(String district) {
+        District = district;
+    }
+
+    String District;
+
+    public String getVillage() {
+        return Village;
+    }
+
+    public void setVillage(String village) {
+        Village = village;
+    }
+
+    String Village;
+
 
 
 

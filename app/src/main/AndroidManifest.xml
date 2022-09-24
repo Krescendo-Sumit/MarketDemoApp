@@ -45,7 +45,9 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MahycoMarketDemo.NoActionBar" />
-
+        <activity
+            android:name=".util.AndroidDatabaseManager"
+            android:exported="false" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.com.vansuita.pickimage.provider"

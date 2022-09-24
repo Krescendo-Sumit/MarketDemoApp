@@ -79,10 +79,10 @@ public class PendingActionAPI {
             if (!progressDialog.isShowing())
                 progressDialog.show();
 
-            Call<VillageMasterModel> call = RetrofitClient.getInstance().getMyApi().getVillagesList(jsonObject);
-            call.enqueue(new Callback<VillageMasterModel>() {
+            Call<List<VillageModel>> call = RetrofitClient.getInstance().getMyApi().getVillagesList(jsonObject);
+            call.enqueue(new Callback<List<VillageModel>>() {
                 @Override
-                public void onResponse(Call<VillageMasterModel> call, Response<VillageMasterModel> response) {
+                public void onResponse(Call<List<VillageModel>> call, Response<List<VillageModel>> response) {
 
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
@@ -90,9 +90,9 @@ public class PendingActionAPI {
 
                     if (response.body() != null) {
 
-                        VillageMasterModel result = response.body();
+                        List<VillageModel> result = response.body();
                         try {
-                            resultOutput.onListResponceVillage(result);
+                            resultOutput.onListResponceVillage(result,jsonObject.get("filterValue").getAsString());
                         } catch (NullPointerException e) {
                             Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class PendingActionAPI {
                 }
 
                 @Override
-                public void onFailure(Call<VillageMasterModel> call, Throwable t) {
+                public void onFailure(Call<List<VillageModel>> call, Throwable t) {
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
                     Log.e("Error is", t.getMessage());

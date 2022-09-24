@@ -201,7 +201,7 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
 
                     for (KeyValue k:arrayList_keyvalues)
                     {
-                        if(k.getInputype().equals("EditText"))
+                        if(k.getInputype().equals("Edit Text"))
                         {
                             String value=((EditText)findViewById(k.getSb_id())).getText().toString().trim();
                             Log.i("Value in Edit Text",value);

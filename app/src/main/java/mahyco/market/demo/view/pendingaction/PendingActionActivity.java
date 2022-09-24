@@ -130,12 +130,12 @@ RecyclerView rc_pendingaction;
     }
 
     @Override
-    public void onListResponceVillage(VillageMasterModel result) {
-        if (result.isSuccess()) {
+    public void onListResponceVillage(List<VillageModel> result,String TalukaName) {
+        if (result.size()>0) {
             //Toast.makeText(context, "" + result.getAsJsonArray("PendingActions").size(), Toast.LENGTH_SHORT).show();
-            lst_actionModels_villages=result.getVillageList();
+            lst_actionModels_villages=result;
             Toast.makeText(context, "Village id "+lst_actionModels_villages.size(), Toast.LENGTH_SHORT).show();
-            if(sqlightDatabase.addVillages(lst_actionModels_villages))
+            if(sqlightDatabase.addVillages(lst_actionModels_villages,TalukaName))
             {
                 Toast.makeText(context, "Village Added.", Toast.LENGTH_SHORT).show();
             }else
@@ -144,7 +144,7 @@ RecyclerView rc_pendingaction;
             }
 
         } else {
-            Toast.makeText(context, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No Village Found", Toast.LENGTH_SHORT).show();
         }
     }
 }

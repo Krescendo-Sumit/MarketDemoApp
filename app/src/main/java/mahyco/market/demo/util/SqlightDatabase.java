@@ -28,7 +28,7 @@ import mahyco.market.demo.model.parametermodels.ParamterModel;
 
 public class SqlightDatabase extends SQLiteOpenHelper {
 
-    final static String DBName = "db_marketdemo";
+    final static String DBName = "db_marketdemo.db";
     final static int version = 6;
     private static final String TBL_SOWING_MASTER = "TBL_SOWING_MASTER";
     private static final String TBL_CHARACTRISTICS = "TBL_CHARACTRISTICS";
@@ -117,6 +117,9 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 "ProductId INTEGER," +
                 "PendingFor INTEGER," +
                 "VillageName TEXT," +
+                "State TEXT," +
+                "District TEXT," +
+                "Taluka TEXT," +
                 "UserCode TEXT," +
                 "SyncStatus INTERGER," +
                 "DownlaodStatus INTEGER," +
@@ -263,11 +266,11 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             values.put("PendingFor", actionModel.getPendingFor());
             values.put("PendingVisitStage", actionModel.getPendingVisitStage());
             values.put("DistrictCode", actionModel.getDistrictCode());
-            values.put("DistrictName", actionModel.getDistrictName());
+            values.put("DistrictName", actionModel.getDistrict());
             values.put("TalukaCode", actionModel.getTalukaCode());
-            values.put("TalukaName", actionModel.getTalukaName());
+            values.put("TalukaName", actionModel.getTaluka());
             values.put("VillageCode", actionModel.getVillageCode());
-            values.put("VillageName", actionModel.getVillageName());
+            values.put("VillageName", actionModel.getVillage());
 
             values.put("FarmerName", actionModel.getFarmerName());
             values.put("MobileNo", actionModel.getMobileNo());
@@ -326,7 +329,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
 
     }
 
-    public boolean addVillages(List<VillageModel> actionModel) {
+    public boolean addVillages(List<VillageModel> actionModel,String TalukaName) {
 
         SQLiteDatabase mydb = null;
         try {
@@ -338,7 +341,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 values.put("TalukaId", v.getTalukaId());
                 values.put("VillageCode", v.getVillageCode());
                 values.put("VillageName", v.getVillageName());
-                values.put("TalukaCode", v.getTalukaCode());
+                values.put("TalukaCode", TalukaName);
                 values.put("Flag", v.getFlag());
                 values.put("TrDate", v.getTrDate());
                 mydb.insert(TBL_VILLAGE_MASTER, null, values);
@@ -559,6 +562,9 @@ public class SqlightDatabase extends SQLiteOpenHelper {
             values.put("ProductId", sowingMasterModel.getProductId());// INTEGER," +
             values.put("PendingFor", sowingMasterModel.getPendingFor());// INTEGER," +
             values.put("VillageName", sowingMasterModel.getVillageName());// TEXT," +
+            values.put("State", sowingMasterModel.getState());// TEXT," +
+            values.put("District", sowingMasterModel.getDistrict());// TEXT," +
+            values.put("Taluka", sowingMasterModel.getTaluka());// TEXT," +
             values.put("UserCode", sowingMasterModel.getUserCode());// TEXT," +
             values.put("ImageName", sowingMasterModel.getImageName());// TEXT," +
             values.put("ImageinByte", sowingMasterModel.getImageinByte());// TEXT," +
@@ -754,7 +760,7 @@ public class SqlightDatabase extends SQLiteOpenHelper {
         ArrayList<VillageModel> arrayLists = new ArrayList<VillageModel>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM " + TBL_VILLAGE_MASTER + " where TalukaId=" + talukaId + " order by VillageName";
+            String q = "SELECT  * FROM " + TBL_VILLAGE_MASTER + " where TalukaCode='" + talukaId + "' order by VillageName";
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 Log.i("Row", c.getString(3));
@@ -810,13 +816,14 @@ public class SqlightDatabase extends SQLiteOpenHelper {
     }
 
     public ArrayList<KeyValue> getMenuList(int pendingfor, String uniqueno, int status) {
+
         SQLiteDatabase mydb = null;
         String k = "";
         KeyValue keyValue = null;
         ArrayList<KeyValue> arrayLists = new ArrayList<KeyValue>();
         try {
             mydb = this.getReadableDatabase();
-            String q = "SELECT  * FROM TBL_MENU_MASTER where syncstatus=" + status;
+            String q = "SELECT  * FROM TBL_MENU_MASTER where syncstatus=" + status+" and UniqueSrNo='"+uniqueno+"'";
             Cursor c = mydb.rawQuery(q, null);
             while (c.moveToNext()) {
                 Log.i("Row", c.getString(3));
@@ -866,11 +873,14 @@ public class SqlightDatabase extends SQLiteOpenHelper {
                 sowingMasterModel.setProductId(c.getInt(11));//", sowingMasterModel.getProductId());// INTEGER," +
                 sowingMasterModel.setPendingFor(c.getInt(12));//", sowingMasterModel.getPendingFor());// INTEGER," +
                 sowingMasterModel.setVillageName(c.getString(13));//", sowingMasterModel.getUniqueSrNo());// TEXT," +
-                sowingMasterModel.setUserCode(c.getString(14));//", sowingMasterModel.getUserCode());// TEXT," +
-                sowingMasterModel.setSyncStatus(c.getInt(15));//", sowingMasterModel.getSyncStatus());// INTERGER," +
-                sowingMasterModel.setDownlaodStatus(c.getInt(16));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
-                sowingMasterModel.setImageName(c.getString(17));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
-                sowingMasterModel.setImageinByte(c.getString(18));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setState(c.getString(14));//", sowingMasterModel.getUniqueSrNo());// TEXT," +
+                sowingMasterModel.setDistrict(c.getString(15));//", sowingMasterModel.getUniqueSrNo());// TEXT," +
+                sowingMasterModel.setTaluka(c.getString(16));//", sowingMasterModel.getUniqueSrNo());// TEXT," +
+                sowingMasterModel.setUserCode(c.getString(17));//", sowingMasterModel.getUserCode());// TEXT," +
+                sowingMasterModel.setSyncStatus(c.getInt(18));//", sowingMasterModel.getSyncStatus());// INTERGER," +
+                sowingMasterModel.setDownlaodStatus(c.getInt(19));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageName(c.getString(20));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
+                sowingMasterModel.setImageinByte(c.getString(21));//", sowingMasterModel.getDownlaodStatus());// INTEGER" +
 
                 arrayLists.add(sowingMasterModel);
             }

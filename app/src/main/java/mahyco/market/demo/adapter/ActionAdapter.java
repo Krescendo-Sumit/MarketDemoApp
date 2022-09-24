@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Movie;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,13 +106,25 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
             holder.tvState.setText(actionModel.getState());
             holder.tvTotalMDSeedAvlInGram.setText(actionModel.getTotalMDSeedAvlInGram());
             holder.tvNoOfKits.setText(actionModel.getNoOfKits());
-            holder.tvDistrictId.setText(actionModel.getDistrictName());
-            holder.tvTalukaId.setText(actionModel.getTalukaName());
+            holder.tvDistrictId.setText(actionModel.getDistrict());
+            holder.tvTalukaId.setText(actionModel.getTaluka());
             holder.tvAssignedTo.setText(actionModel.getAssignedTo());
             holder.tvIsAllocated.setText(actionModel.getIsAllocated());
             holder.tvProductId.setText(actionModel.getProductId());
             holder.tvVisitStageId.setText(actionModel.getVisitStageId());
-            holder.tvVisitStage.setText(actionModel.getPendingVisitStage());
+boolean isCompleted=false;
+            if(actionModel.getPendingVisitStage().trim().equals("")) {
+                holder.tvVisitStage.setText("Complete");
+                holder.tvVisitStage.setTextColor(Color.GREEN);
+                holder.tvVisitStage.setTypeface(Typeface.DEFAULT_BOLD);
+                isCompleted=true;
+                holder.btnDownloadPA.setEnabled(false);
+                holder.btnDownloadPA.setVisibility(View.GONE);
+            }
+            else {
+                isCompleted=false;
+                holder.tvVisitStage.setText(actionModel.getPendingVisitStage());
+            }
             holder.tvDemoCropSowingId.setText(actionModel.getDemoCropSowingId());
 
             if(Integer.parseInt(actionModel.getPendingFor().trim())>1)
@@ -176,6 +189,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                     if (k > 0) {
                         holder.btnDownloadPA.setText("Already Downloaded");
                     }
+
                     if (k > 0) {
 
                         Toast.makeText(context, "Already Exist!", Toast.LENGTH_SHORT).show();
@@ -183,19 +197,19 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
                         Preferences.save(context, Preferences.SELECTED_UNIQSRID,actionModel.getUniqueSrNo());
                       if (pendingfor > 1) {
                             if (sqlightDatabase.getChracteristics(actionModel.getProductId(), actionModel.getUniqueSrNo()).size() > 0) {
-
-                            } else {
+                           } else {
                                 JsonObject jsonObject = new JsonObject();
                                 jsonObject.addProperty("ProductId", actionModel.getProductId());
                                 jsonObject.addProperty("VisitStageId", actionModel.getPendingFor());
                                 pendingActionAPI.getChartristics(jsonObject);
                             }
                         } else {
-                            if (sqlightDatabase.getLocalVillage(actionModel.getTalukaId()).size() > 0) {
+                            if (sqlightDatabase.getLocalVillage(actionModel.getTaluka()).size() > 0) {
+                         //       Toast.makeText(context, "Taluka Exist", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 JsonObject jsonObject = new JsonObject();
-                                jsonObject.addProperty("filterValue", actionModel.getTalukaId());
+                                jsonObject.addProperty("filterValue", actionModel.getTaluka());
                                 jsonObject.addProperty("FilterOption", "TalukaId");
                                 pendingActionAPI.getVillageList(jsonObject);
                             }

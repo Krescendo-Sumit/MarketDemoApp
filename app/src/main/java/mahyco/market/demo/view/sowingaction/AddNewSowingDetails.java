@@ -84,6 +84,9 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
     int ProductId;// INTEGER," +
     int PendingFor;// INTEGER," +
     String VillageName;// TEXT," +
+    String State;// TEXT," +
+    String District;// TEXT," +
+    String Taluka;// TEXT," +
     String UserCode;// TEXT," +
     int SyncStatus;// INTERGER," +
     int DownlaodStatus;// INTEGER"
@@ -228,7 +231,7 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
                 edState.setText(actionModel.getState());
                 edDistrict.setText(actionModel.getDistrictName());
                 edBlockTaluka.setText(actionModel.getTalukaName());
-                villageModelsList = sqlightDatabase.getLocalVillage(actionModel.getTalukaId());
+                villageModelsList = sqlightDatabase.getLocalVillage(actionModel.getTalukaName());
                 ArrayAdapter adapter = new ArrayAdapter(context,
                         android.R.layout.simple_spinner_item, sqlightDatabase.getVillageTitleFromList(villageModelsList));
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -255,6 +258,9 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
                             sowingMasterModel.setProductId(ProductId);// INTEGER," +
                             sowingMasterModel.setPendingFor(PendingFor);// INTEGER," +
                             sowingMasterModel.setVillageName(VillageName);// TEXT," +
+                            sowingMasterModel.setState(State);// TEXT," +
+                            sowingMasterModel.setDistrict(District);// TEXT," +
+                            sowingMasterModel.setTaluka(Taluka);// TEXT," +
                             sowingMasterModel.setUserCode(UserCode);// TEXT," +
                             sowingMasterModel.setSyncStatus(SyncStatus);// INTERGER," +
                             sowingMasterModel.setDownlaodStatus(DownlaodStatus);// INTEGER"
@@ -359,6 +365,9 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             CheckHybrid = edCheckHybridName.getText().toString().trim();
             CompanyOfCheckHybrid = edCheckHybridCompany.getText().toString().trim();
             DOS = edDateOfSowing.getText().toString().trim();
+            State = edState.getText().toString().trim();
+            District = edDistrict.getText().toString().trim();
+            Taluka = edBlockTaluka.getText().toString().trim();
             //  Latitude = "24.377828";
             //   longitude = "75.229930";
             ResAddr = edResAddr.getText().toString().trim();
@@ -383,6 +392,18 @@ public class AddNewSowingDetails extends AppCompatActivity implements IPickResul
             }
             if (NameOfHybrid.equals("")) {
                 edMDHybridName.setError("Enter Name Of Hybrid");
+                cnt++;
+            }
+            if (State.equals("")) {
+                edState.setError("Enter Name Of State");
+                cnt++;
+            }
+            if (District.equals("")) {
+                edDistrict.setError("Enter Name Of District");
+                cnt++;
+            }
+            if (Taluka.equals("")) {
+                edBlockTaluka.setError("Enter Name Of Taluka");
                 cnt++;
             }
             if (CheckHybrid.equals("")) {
