@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
@@ -30,6 +31,7 @@ import com.vansuita.pickimage.listeners.IPickResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,9 +60,15 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
     ArrayList<LocalCharactersticsModel> arrayList;
     LinearLayout ll;
     ArrayList<KeyValue> arrayList_keyvalues;
-    TextView  txt_chooseimage;
-    ImageView img_famerimage;
+    TextView  txt_chooseimage,txt_chooseimage1,txt_chooseimage2,txt_chooseimage3,txt_chooseimage4;
+    ImageView img_famerimage,img_famerimage1,img_famerimage2,img_famerimage3,img_famerimage4;
     String file_path="",base64_image="";
+    int imageid=0;
+
+    JsonObject jsonObjectImages;
+    JsonArray jsonArrayImages;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,10 +76,48 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = SowingUpdateActivity.this;
         txt_chooseimage = findViewById(R.id.txt_choose_image);
+        txt_chooseimage1 = findViewById(R.id.txt_choose_image1);
+        txt_chooseimage2 = findViewById(R.id.txt_choose_image2);
+        txt_chooseimage3 = findViewById(R.id.txt_choose_image3);
+        txt_chooseimage4 = findViewById(R.id.txt_choose_image4);
         img_famerimage = findViewById(R.id.img_farmer);
+        img_famerimage1 = findViewById(R.id.img_farmer1);
+        img_famerimage2 = findViewById(R.id.img_farmer2);
+        img_famerimage3 = findViewById(R.id.img_farmer3);
+        img_famerimage4 = findViewById(R.id.img_farmer4);
+        jsonArrayImages=new JsonArray();
         txt_chooseimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imageid=1;
+                PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
+            }
+        });
+        txt_chooseimage1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageid=2;
+                PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
+            }
+        });
+        txt_chooseimage2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageid=3;
+                PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
+            }
+        });
+        txt_chooseimage3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageid=4;
+                PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
+            }
+        });
+        txt_chooseimage4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageid=5;
                 PickImageDialog.build(new PickSetup().setPickTypes(EPickType.CAMERA)).show(SowingUpdateActivity.this);
             }
         });
@@ -224,14 +270,13 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
                         }
                     }
 
-
-                    if(base64_image.trim().equals(""))
+                    base64_image=jsonArrayImages.toString();
+                    if(jsonArrayImages.size()==0)
                     {
                         Toast.makeText(context, "Please take a photo.", Toast.LENGTH_SHORT).show();
                     }else {
                         if (sqlightDatabase.addSowingUpdateMaster(democropsowingid, uniqueid, productid, "", base64_image, pendingfor, usercode)) {
                             Toast.makeText(context, "Master Data Added.", Toast.LENGTH_SHORT).show();
-
                         }
                         if (sqlightDatabase.addMenus(arrayList_keyvalues)) {
                             Toast.makeText(context, "Menu Details Added Successfully.", Toast.LENGTH_SHORT).show();
@@ -268,10 +313,48 @@ public class SowingUpdateActivity extends AppCompatActivity  implements IPickRes
     @Override
     public void onPickResult(PickResult r) {
         try {
-            base64_image="";
+
+            File file=new File(r.getPath());
+            jsonObjectImages=new JsonObject();
+            jsonObjectImages.addProperty("filepath",r.getPath());
+            jsonObjectImages.addProperty("filename",file.getName());
+            jsonObjectImages.addProperty("id",imageid);
+            jsonArrayImages.add(jsonObjectImages);
+
+            switch(imageid)
+            {
+                case 1:
+                    img_famerimage.setVisibility(View.VISIBLE);
+                    img_famerimage.setImageBitmap(r.getBitmap());
+                    break;
+
+                case 2:
+                    img_famerimage1.setVisibility(View.VISIBLE);
+                    img_famerimage1.setImageBitmap(r.getBitmap());
+                    break;
+
+                case 3:
+                    img_famerimage2.setVisibility(View.VISIBLE);
+                    img_famerimage2.setImageBitmap(r.getBitmap());
+                    break;
+
+                case 4:
+                    img_famerimage3.setVisibility(View.VISIBLE);
+                    img_famerimage3.setImageBitmap(r.getBitmap());
+                    break;
+
+                case 5:
+                    img_famerimage4.setVisibility(View.VISIBLE);
+                    img_famerimage4.setImageBitmap(r.getBitmap());
+                    break;
+            }
+
+
+
+     /*       base64_image="";
             img_famerimage.setImageBitmap(r.getBitmap());
             file_path=r.getPath();
-            base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());
+            base64_image = MyApplicationUtil.getImageDatadetail(r.getPath());*/
         } catch (Exception e) {
 
         }

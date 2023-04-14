@@ -1,9 +1,12 @@
 package mahyco.market.demo.view.dashboard;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
@@ -17,12 +20,17 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
@@ -32,6 +40,7 @@ import mahyco.market.demo.model.PendingActionModel;
 import mahyco.market.demo.model.SowingMasterModel;
 import mahyco.market.demo.model.UpdateSowingModel;
 import mahyco.market.demo.util.AndroidDatabaseManager;
+import mahyco.market.demo.util.MyApplicationUtil;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
 import mahyco.market.demo.view.actionlist.PendingActionList;
@@ -221,53 +230,79 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onClick(View view) {
                 //  Toast.makeText(context, "" + sqlightDatabase.getUpdateSowingDetails(0).size(), Toast.LENGTH_SHORT).show();
+                try {
+                    Date c = Calendar.getInstance().getTime();
+                    System.out.println("Current time => " + c);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String formattedDate = df.format(c);
+                    ArrayList<UpdateSowingModel> sowingMasterModels = sqlightDatabase.getUpdateSowingDetails(0);
+                    // Toast.makeText(context, "" + sowingMasterModels.size(), Toast.LENGTH_SHORT).show();
+                    JsonArray jsonArray = new JsonArray();
+                    JsonObject jsonObject = new JsonObject();
+                    JsonArray jsonArrayImages = new JsonArray();
+                    for (UpdateSowingModel m : sowingMasterModels) {
+                        JsonObject json = new JsonObject();
+                        json.addProperty("DemoCropSowingId", m.getDemoCropSowingId());//: 0,
+                        json.addProperty("UniqueSrNo", m.getUniqueSrNo());//
+                        json.addProperty("ProductId", m.getProductId());//
+                        json.addProperty("ImageName", m.getImageName());//
+                        if (m.getImageinByte() != null) {
+                         //   json.addProperty("ImageinByte", m.getImageinByte().replace("\n", ""));//
 
-                ArrayList<UpdateSowingModel> sowingMasterModels = sqlightDatabase.getUpdateSowingDetails(0);
-                // Toast.makeText(context, "" + sowingMasterModels.size(), Toast.LENGTH_SHORT).show();
-                JsonArray jsonArray = new JsonArray();
-                JsonObject jsonObject = new JsonObject();
+                            JSONArray asJsonArray = new JSONArray(m.getImageinByte().trim());
+                            for (int i = 0; i < asJsonArray.length(); i++) {
+                                Log.i("Data" + i, asJsonArray.get(i).toString());
+                                JSONObject jo=asJsonArray.getJSONObject(i);
+                                JsonObject jsonObject1=new JsonObject();
+                        //        jsonObject1.addProperty("ImageName",jo.getString("filename"));
+                                jsonObject1.addProperty("ImageinByte", MyApplicationUtil.getImageDatadetail(jo.getString("filepath").trim()));
+                         //       jsonObject1.addProperty("ImageinByte", "");
+                                jsonObject1.addProperty("CreatedDt",formattedDate);
+                                jsonArrayImages.add(jsonObject1);
 
-                for (UpdateSowingModel m : sowingMasterModels) {
-                    JsonObject json = new JsonObject();
-                    json.addProperty("DemoCropSowingId", m.getDemoCropSowingId());//: 0,
-                    json.addProperty("UniqueSrNo", m.getUniqueSrNo());//
-                    json.addProperty("ProductId", m.getProductId());//
-                    json.addProperty("ImageName", m.getImageName());//
-                    if (m.getImageinByte() != null) {
-                        json.addProperty("ImageinByte", m.getImageinByte().replace("\n", ""));//
-                    } else {
-                        json.addProperty("ImageinByte", "");//
+                            }
 
-                    }
-                    json.addProperty("PendingFor", m.getPendingFor());//
+                        } else {
+                        //    json.addProperty("ImageinByte", "");//
 
-                    json.addProperty("UserCode", m.getUserCode());//
-                    JsonArray jsonArray_menu = new JsonArray();
-                    JsonObject jsonObject_menu = new JsonObject();
-
-                    //  Toast.makeText(context, ""+sqlightDatabase.getMenuList(m.getPendingFor(),m.getUniqueSrNo(),0).size(), Toast.LENGTH_SHORT).show();
-                    for (KeyValue k : sqlightDatabase.getMenuList(m.getPendingFor(), m.getUniqueSrNo(), 0)) {
-                        try {
-                            jsonObject_menu = new JsonObject();
-                            jsonObject_menu.addProperty("MenuId", k.getSb_id());
-                            if (k.getValue() == null)
-                                jsonObject_menu.addProperty("KeyValue", "NA");
-                            else
-
-                                jsonObject_menu.addProperty("KeyValue", k.getValue());
-                            jsonObject_menu.addProperty("CreatedDt", k.getCreatedDt());
-                            jsonArray_menu.add(jsonObject_menu);
-                            Log.i("Added", "" + jsonObject_menu);
-                        } catch (Exception e) {
-                            Log.i("GoT Error ", e.getMessage());
                         }
+                        json.addProperty("PendingFor", m.getPendingFor());//
+
+                        json.addProperty("UserCode", m.getUserCode());//
+                        JsonArray jsonArray_menu = new JsonArray();
+                        JsonObject jsonObject_menu = new JsonObject();
+
+                        //  Toast.makeText(context, ""+sqlightDatabase.getMenuList(m.getPendingFor(),m.getUniqueSrNo(),0).size(), Toast.LENGTH_SHORT).show();
+                        for (KeyValue k : sqlightDatabase.getMenuList(m.getPendingFor(), m.getUniqueSrNo(), 0)) {
+                            try {
+                                jsonObject_menu = new JsonObject();
+                                jsonObject_menu.addProperty("MenuId", k.getSb_id());
+                                if (k.getValue() == null)
+                                    jsonObject_menu.addProperty("KeyValue", "NA");
+                                else
+
+                                    jsonObject_menu.addProperty("KeyValue", k.getValue());
+                                jsonObject_menu.addProperty("CreatedDt", k.getCreatedDt());
+                                jsonArray_menu.add(jsonObject_menu);
+                                Log.i("Added", "" + jsonObject_menu);
+                            } catch (Exception e) {
+                                Log.i("GoT Error ", e.getMessage());
+                            }
+                        }
+                        json.add("cropCharacteristicsMenuModel", jsonArray_menu);
+
+                        json.add("demoCropImagesModels",jsonArrayImages);
+                        jsonArray.add(json);
                     }
-                    json.add("cropCharacteristicsMenuModel", jsonArray_menu);
-                    jsonArray.add(json);
+                    jsonObject.add("cropAndCharSowingModel", jsonArray);
+                   // jsonObject.add("demoCropImagesModels", jsonArrayImages);
+                    Log.i("Json Array is ", jsonObject.toString());
+                    homeAPI.uploadUdatedSowingDetails(jsonObject);
                 }
-                jsonObject.add("cropAndCharSowingModel", jsonArray);
-                Log.i("Json Array is ", jsonObject.toString());
-                homeAPI.uploadUdatedSowingDetails(jsonObject);
+                catch(Exception e)
+                {
+
+                }
             }
         });
 
@@ -297,9 +332,13 @@ public class HomeFragment extends Fragment implements HomeListener {
             if (sqlightDatabase.updateSowingMasterStatus(unicno.trim())) {
                 Toast.makeText(context, "Data Sync Successfully.", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+            showMessage(context,messageModel.isSuccess()?"Success":"Error" ,"" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.",false);
+
+      //      Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+    //        Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+            showMessage(context,messageModel.isSuccess()?"Success":"Error" ,"" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.",false);
+
         }
         if (messageModel.getMessage().contains("Data Already Present for Sowing")) {
             String unicno = Preferences.get(context, Preferences.SELECTED_UNIQSRID);
@@ -311,6 +350,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         showUploadCount();
     }
 
+
     @Override
     public void onResponceUpdate(MessageModel messageModel) {
         if (messageModel.isSuccess()) {
@@ -318,11 +358,31 @@ public class HomeFragment extends Fragment implements HomeListener {
             if (sqlightDatabase.updateSowingUpdateMasterStatus(unicno.trim())) {
                 Toast.makeText(context, "Data Sync Successfully.", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+            showMessage(context,messageModel.isSuccess()?"Success":"Error" ,"" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.",false);
         } else {
             Toast.makeText(context, "" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.", Toast.LENGTH_SHORT).show();
+            showMessage(context,messageModel.isSuccess()?"Success":"Error" ,"" + messageModel.getMessage() != null ? messageModel.getMessage() : "Something Went Wrong.",false
+            );
+
         }
         showUploadCount();
+    }
+
+    void showMessage(Context context,String title,String message,boolean isFinishedActivity)
+    {
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setTitle(title)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if(isFinishedActivity)
+                            ((Activity)context).finish();
+                    }
+                })
+                .show();
     }
 
     public void showUploadCount() {

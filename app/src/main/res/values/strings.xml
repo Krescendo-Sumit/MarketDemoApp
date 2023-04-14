@@ -121,4 +121,14 @@
     <string name="demo_quantity">Demo quantity (g)</string>
     <string name="uniqueSrNo">UniqueSrNo</string>
     <string name="MDDispatchSegmetnId">MDDispatchSegmetnId</string>
+
+
+    <string-array name="cropstatus">
+
+        <item>Select Crop Status</item>
+        <item>Poor</item>
+        <item>Average</item>
+        <item>Good</item>
+        <item>Excellent</item>
+    </string-array>
 </resources>

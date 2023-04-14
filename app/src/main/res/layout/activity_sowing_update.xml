@@ -12,48 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <ImageView
-                    android:id="@+id/img_farmer"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="3.5"
-                    android:fontFamily="@font/comforta"
-                    android:scaleType="fitCenter"
-                    android:text="@string/geo_tagging"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txt_choose_image"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6.5"
-                    android:drawableLeft="@drawable/ic_menu_camera"
-                    android:fontFamily="@font/comforta"
-                    android:gravity="center|left"
-                    android:text="Take Photo"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-            </LinearLayout>
-
-
-
-        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -64,7 +22,189 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp" />
+                android:padding="10dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/img_farmer"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="3.5"
+                            android:fontFamily="@font/comforta"
+                            android:scaleType="fitCenter"
+                            android:text="@string/geo_tagging"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_choose_image"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6.5"
+                            android:drawableLeft="@drawable/ic_menu_camera"
+                            android:fontFamily="@font/comforta"
+                            android:gravity="center|left"
+                            android:text="Take Photo 1"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/img_farmer1"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="3.5"
+                            android:fontFamily="@font/comforta"
+                            android:scaleType="fitCenter"
+                            android:text="@string/geo_tagging"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_choose_image1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6.5"
+                            android:drawableLeft="@drawable/ic_menu_camera"
+                            android:fontFamily="@font/comforta"
+                            android:gravity="center|left"
+                            android:text="Take Photo 2"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/img_farmer2"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="3.5"
+                            android:fontFamily="@font/comforta"
+                            android:scaleType="fitCenter"
+                            android:text="@string/geo_tagging"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_choose_image2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6.5"
+                            android:drawableLeft="@drawable/ic_menu_camera"
+                            android:fontFamily="@font/comforta"
+                            android:gravity="center|left"
+                            android:text="Take Photo 3"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/img_farmer3"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="3.5"
+                            android:fontFamily="@font/comforta"
+                            android:scaleType="fitCenter"
+                            android:text="@string/geo_tagging"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_choose_image3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6.5"
+                            android:drawableLeft="@drawable/ic_menu_camera"
+                            android:fontFamily="@font/comforta"
+                            android:gravity="center|left"
+                            android:text="Take Photo 4"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/img_farmer4"
+                            android:layout_width="0dp"
+                            android:layout_height="100dp"
+                            android:layout_weight="3.5"
+                            android:fontFamily="@font/comforta"
+                            android:scaleType="fitCenter"
+                            android:text="@string/geo_tagging"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_choose_image4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6.5"
+                            android:drawableLeft="@drawable/ic_menu_camera"
+                            android:fontFamily="@font/comforta"
+                            android:gravity="center|left"
+                            android:text="Take Photo 5"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
 

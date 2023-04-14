@@ -14,6 +14,7 @@ public class Constants {
     public static final String UPLOAD_SOWING_UPDATE_DETAILS = "api/cropSowing/demoCropSowingUpdate";
     public static final String GET_REPORTMASTER ="api/mobileAppReport/getSowingReport" ;
     public static final String GET_REPORTDETAILSMASTER = "api/mobileAppReport/getSowingReportDetails" ;
+    public static final String ADD_ADMINREMARK = "api/cropRemark/create";
     static final String CHECK_LOGIN="api/customToken/customToken";
 
 }

@@ -1142,6 +1142,18 @@
                     android:textSize="10sp"
                     android:textStyle="normal" />
 
+                <android.widget.Button
+                    android:id="@+id/btnDownloadRemark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_btn_green"
+                    android:fontFamily="@font/comforta"
+                    android:padding="2dp"
+                    android:text="Add Remark"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="normal" />
+
 
             </LinearLayout>
 

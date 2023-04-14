@@ -47,6 +47,9 @@ public interface Api {
     @POST(Constants.GET_REPORTDETAILSMASTER)
     Call<ReportDetailsModel> getReportDetailsMaster(@Body JsonObject jsonObject);
 
+    @POST(Constants.ADD_ADMINREMARK)
+    Call<String> addRemark(@Body JsonObject jsonObject);
+
 /*
     @POST(Constants.COURSE_URL)
     Call<List<BhartiModel>> getCourseList(@Body JSONObject jsonObject);

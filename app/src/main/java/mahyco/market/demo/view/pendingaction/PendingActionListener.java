@@ -1,5 +1,7 @@
 package mahyco.market.demo.view.pendingaction;
 
+import android.app.Dialog;
+
 import java.util.List;
 
 import mahyco.market.demo.model.CharactristicsModel;
@@ -13,4 +15,6 @@ public interface PendingActionListener {
     public void onListResponce(List result);
     public void onListResponce(PendingActionModel result);
     public void onListResponceVillage(List<VillageModel> result,String TalukaName);
+
+    void onRemarkAdded(String result, Dialog d);
 }

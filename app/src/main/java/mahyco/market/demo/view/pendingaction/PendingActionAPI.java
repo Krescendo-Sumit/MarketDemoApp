@@ -1,5 +1,6 @@
 package mahyco.market.demo.view.pendingaction;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
@@ -152,5 +153,48 @@ public class PendingActionAPI {
     }
 
 
+    public void addRemark(JsonObject jsonObject, Dialog dialog) {
 
+        try {
+
+            if (!progressDialog.isShowing())
+                progressDialog.show();
+
+            Call<String> call = RetrofitClient.getInstance().getMyApi().addRemark(jsonObject);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    //  Toast.makeText(CourseList.this, "Calling..", Toast.LENGTH_SHORT).show();
+
+                    if (response.body() != null) {
+
+                        String result = response.body();
+                        try {
+                            resultOutput.onRemarkAdded(result,dialog);
+                        } catch (NullPointerException e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, "Error is " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Log.e("Error is", t.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            Toast.makeText(context, "Error is"+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 }

@@ -1,10 +1,13 @@
 package mahyco.market.demo.view.pendingaction;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,5 +151,53 @@ RecyclerView rc_pendingaction;
         } else {
             Toast.makeText(context, "No Village Found", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onRemarkAdded(String result, Dialog dialog1) {
+
+
+        try{
+            JSONObject j=new JSONObject(result);
+            if(j.getBoolean("ResultFlag"))
+            {
+                new AlertDialog.Builder(context)
+                        .setTitle(j.getString("status"))
+                        .setMessage(j.getString("Comment"))
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                dialog1.dismiss();
+                            }
+                        })
+                        .show();
+            }else
+            {
+                new AlertDialog.Builder(context)
+                        .setTitle(j.getString("status"))
+                        .setMessage(j.getString("Comment"))
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        }catch (Exception e)
+        {
+            new AlertDialog.Builder(context)
+                    .setTitle("Exception")
+                    .setMessage("Something went wrong..")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }
+
     }
 }

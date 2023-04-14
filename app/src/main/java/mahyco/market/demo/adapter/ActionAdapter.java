@@ -1,5 +1,6 @@
 package mahyco.market.demo.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,26 +13,36 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mahyco.market.demo.R;
 import mahyco.market.demo.model.ActionModel;
 import mahyco.market.demo.util.Preferences;
 import mahyco.market.demo.util.SqlightDatabase;
 import mahyco.market.demo.view.pendingaction.PendingActionAPI;
+import mahyco.market.demo.view.remarks.AddRemark;
 
 
 public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObjectHolder> implements Filterable {
@@ -44,6 +55,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
     ArrayList<ActionModel> actionModelArrayList = null;
     ArrayList<ActionModel> actionModelArrayList_filter = null;
     private ArrayList<ActionModel> movieListFiltered;
+    Dialog dialog;
 
     public interface EventListener {
         void onDelete(int trid, int position);
@@ -57,6 +69,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
         this.context = context;
         sqlightDatabase = new SqlightDatabase(context);
         this.pendingActionAPI = pendingActionAPI;
+
     }
 
     @NonNull
@@ -93,10 +106,10 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.DataObject
     public void onBindViewHolder(final DataObjectHolder holder, final int position) {
         try {
             ActionModel actionModel = actionModelArrayList.get(position);
-
+            String  roleid=Preferences.get(context,Preferences.ROLE_ID).trim();
             holder.tvPendingFor.setText(actionModel.getPendingFor());
             holder.tvMDDispatchSegmetnId.setText(actionModel.getMDDispatchSegmetnId());
-            holder.tvUniqueSrNo.setText(actionModel.getUniqueSrNo());
+            holder.tvUniqueSrNo.setText(actionModel.getUniqueSrNo()+"  "+roleid);
             holder.tvYear.setText(actionModel.getYear());
             holder.tvSeason.setText(actionModel.getSeason());
             holder.tvCrop.setText(actionModel.getCrop());
@@ -170,6 +183,24 @@ boolean isCompleted=false;
                 holder.btnDownloadPA.setText("Already Downloaded");
             }
 
+            if(roleid.equals("2")||roleid.equals("3"))
+            {
+                holder.btnDownloadRemark.setVisibility(View.VISIBLE);
+            }else
+            {
+                holder.btnDownloadRemark.setVisibility(View.GONE);
+            }
+
+            holder.btnDownloadRemark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+               /*     Intent intent=new Intent(context, AddRemark.class);
+                    context.startActivity(intent);*/
+
+                    openDialog(context,actionModel);
+                }
+            });
+
             holder.btnDownloadPA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -231,6 +262,88 @@ boolean isCompleted=false;
         }
     }
 
+     void openDialog(Context context,ActionModel actionModel) {
+        try{
+            if(actionModel!=null) {
+                dialog =new Dialog(context);
+                dialog.setContentView(R.layout.popup_addremark);
+                dialog.setCanceledOnTouchOutside(false);
+                EditText et_remark = dialog.findViewById(R.id.et_remark);
+                Spinner sp_status = dialog.findViewById(R.id.sp_status);
+                TextView txt_title = dialog.findViewById(R.id.txt_title);
+                txt_title.setText(actionModel.getFarmerName() + " (" + actionModel.getUniqueSrNo() + ")");
+                ImageButton btn_close = dialog.findViewById(R.id.btnclose);
+                btn_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                Button btn_submit = dialog.findViewById(R.id.btnSubmit);
+                btn_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String status=sp_status.getSelectedItem().toString().trim();
+                        String remark=et_remark.getText().toString().trim();
+                        if(remark.equals(""))
+                        {
+                            et_remark.setError("Please enter remark");
+                        }else
+                       if(status.equals("")||status.contains("Select"))
+                           Toast.makeText(context, "Select crop Status", Toast.LENGTH_SHORT).show();
+                       else {
+
+                           Date c = Calendar.getInstance().getTime();
+                           System.out.println("Current time => " + c);
+                           SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                           String formattedDate = df.format(c);
+
+                           JsonObject jsonObject = new JsonObject();
+
+                           //   jsonObject.addProperty("DemoCropRemarkId", 0);
+                           jsonObject.addProperty("RoleId", Integer.parseInt(Preferences.get(context, Preferences.ROLE_ID)));
+                           jsonObject.addProperty("DemoCropSowingId", Integer.parseInt(actionModel.getDemoCropSowingId()));
+                           jsonObject.addProperty("LastVisitDt", formattedDate);
+                           jsonObject.addProperty("Remark", et_remark.getText().toString().trim());
+                           jsonObject.addProperty("CropStatus", status);
+                           jsonObject.addProperty("CreatedBy",Preferences.get(context, Preferences.USER_ID));
+                           jsonObject.addProperty("CreatedDt", formattedDate);//: "2023-04-12T19:35:31.775Z",
+                           //     jsonObject.addProperty("ModifiedBy", Preferences.get(context, Preferences.USER_ID));//: "string",
+                           //    jsonObject.addProperty("ModifiedDt", "2023-04-12T19:35:31.775Z");//: "2023-04-12T19:35:31.775Z",
+                           jsonObject.addProperty("Role", Preferences.get(context, Preferences.ROLE_NAME));//: "string",
+                           jsonObject.addProperty("FarmerName", actionModel.getFarmerName());//: "string",
+                           jsonObject.addProperty("MobileNo", actionModel.getMobileNo());//: "string",
+                           jsonObject.addProperty("NameOfHybrid", actionModel.getNameOfHybrid());//: "string",
+                           jsonObject.addProperty("VisitStage", actionModel.getVisitStage());//: "string"
+
+                           Log.i("Json is", jsonObject.toString());
+
+                           JsonArray jsonArray=new JsonArray();
+                           jsonArray.add(jsonObject);
+
+
+                           JsonObject jsonObject1=new JsonObject();
+                           jsonObject1.add("demoCropRemarkModels",jsonArray);
+
+                      Log.i("Action",jsonObject1.toString());
+
+                        pendingActionAPI.addRemark(jsonObject1,dialog);
+
+                       }
+                    }
+                });
+                dialog.show();
+            }else
+            {
+                Toast.makeText(context, "no data found.", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e)
+        {
+
+        }
+    }
+
 
     public class DataObjectHolder extends RecyclerView.ViewHolder {
         TextView tvPendingFor,
@@ -265,7 +378,7 @@ boolean isCompleted=false;
         TextView tvDOS;
         LinearLayout ll;
 
-        Button btnDownloadPA;
+        Button btnDownloadPA,btnDownloadRemark;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
@@ -301,6 +414,7 @@ boolean isCompleted=false;
             ll= (LinearLayout) itemView.findViewById(R.id.ll);
 
             btnDownloadPA = (Button) itemView.findViewById(R.id.btnDownloadPA);
+            btnDownloadRemark = (Button) itemView.findViewById(R.id.btnDownloadRemark);
         }
     }
 
